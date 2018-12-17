@@ -201,6 +201,9 @@ out/
 # mpeltonen/sbt-idea plugin
 .idea_modules/
 
+# run config
+.idea/runConfigurations/*
+
 # JIRA plugin
 atlassian-ide-plugin.xml
 

@@ -1,0 +1,8 @@
+-r ./base.txt
+
+pytest-django==3.4.4
+psycopg2
+factory-boy
+codecov
+pytest-cov
+django-coverage-plugin

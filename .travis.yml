@@ -13,7 +13,7 @@ before_install:
 install:
 - pip install -U tox-travis
 script:
-- tox
+- pytest --cov-report= --cov=.
 notifications:
   slack:
     secure: liDThGTqsJX/Tu0oESb+aL0bbP4+CyiuD0XxnZRCEzK9e5RxcDYdcNTnQj6k1cFVka8dYf5FIEsrYpH9aAiuIaNXkEHH510PTQilBdNo3GfkOBU0M3OhgXnP0QrZyTDhrOzO0KISrHyU0zoIm5YYng9LmOaZ06XZkh6bikX3v6BL89Vckuqf7tf9N7o/JFOCO74/4yreSgSo4J7Top/3Bp3usXNOESPa11+ky5rR4ROPu0cNeVg4eli37tLEOIeRE3BMvO0bgI3cfBr+XeTGHoN/G6nSm5Rc5pQr815G93IVRFo24bUtQLbumqVVqcA40Ez+N+fqZ3hi4fj5CEu5LJXLWA7dcH/2i3wNFOflCWvNrNC843zPVMt12fM1V1IAAhcKNKl7f4Yh7PLUeRptkgkxILpWT2izxEHaaw275PolRYQko6xw0Pwfv3FDZcxuZ6Y3B7E/7qyqNz+BISloHTToVXxoW3n4JaewoLkA5NMc0pSBv8DK9tF5HOxipK4k+LHhCAY5yFQV0Op6603EZTvCTPC2wFGChHNfGTPVAjWMDfPtcDPFtexjTwLYUphNPP/zEt+zcYNAyyug9LTIsGafw+yuMlBmo/L+2ZDwS1acAGX1qm9JPfWxW98cHgfPFtCkKKDwPX94fIW3X71qagXUbP81gxw/6d9+H4KBAEM=

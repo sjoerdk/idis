@@ -1,0 +1,7 @@
+name: idis
+channels:
+ - anaconda
+dependencies:
+ - pip:
+    - sphinx-autodoc-typehints
+ - python=3.7

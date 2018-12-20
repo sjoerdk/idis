@@ -3,6 +3,13 @@ IDIS
 
 Image DeIdentification Service, a wrapper around RSNA CTP for anonymizion of medical images
 
+.. image:: https://travis-ci.org/sjoerdk/idis.svg?branch=master
+   :target: https://travis-ci.org/sjoerdk/idis
+.. image:: https://readthedocs.org/projects/grand-challengeorg/badge/?version=latest
+   :target: http://grand-challengeorg.readthedocs.io/en/latest/?badge=latest
+   :alt: Documentation Status
+.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
+    :target: https://github.com/ambv/black
 .. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
      :target: https://github.com/pydanny/cookiecutter-django/
      :alt: Built with Cookiecutter Django
@@ -29,7 +36,6 @@ Setting Up Your Users
 * To create an **superuser account**, use this command::
 
     $ python manage.py createsuperuser
-
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
 Type checks

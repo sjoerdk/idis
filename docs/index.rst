@@ -13,8 +13,7 @@ Contents:
 
    getting_started
    deploy
-   tests
-
+   authors
 
 
 Indices and tables

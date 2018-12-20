@@ -3,31 +3,39 @@ IDIS
 
 IDIS is a set of python / django modules that wrap around `CTP <https://mircwiki.rsna.org/index.php?title=MIRC_CTP>`_
 to create an image de-identification server
+`DICOM Confidentiality options <http://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.html>`_
 
 .. image:: https://travis-ci.org/sjoerdk/idis.svg?branch=master
    :target: https://travis-ci.org/sjoerdk/idis
-.. image:: https://readthedocs.org/projects/grand-challengeorg/badge/?version=latest
-   :target: http://isid.readthedocs.io/en/latest/?badge=latest
+.. image:: https://readthedocs.org/projects/idis/badge/?version=latest
+   :target: http://idis.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status
 .. image:: https://img.shields.io/badge/code%20style-black-000000.svg
     :target: https://github.com/ambv/black
-.. image:: https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg
-     :target: https://github.com/pydanny/cookiecutter-django/
-     :alt: Built with Cookiecutter Django
 
-
-:License: GPLv3
+* Free software: GPLv3 license
+* Documentation: http://idis.readthedocs.io/
 
 
 Features
 --------
 
+* Job-based de-identication that links data, user and de-identification options
 
+* Jobs creation via django website or web API / Python client
 
-Deployment
-----------
+* Pull data from local disk, network share, DICOM node or via DICOM WADO
 
-The following details how to deploy this application.
+* Uses standard `DICOM Confidentiality options <http://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.html>`_
+  to define de-identification that is to be performed
+
+Credits
+-------
+
+This package was created with Cookiecutter_ and the `pydanny/cookiecutter-django/`_ project template.
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`pydanny/cookiecutter-django/`:  https://github.com/pydanny/cookiecutter-django/
 
 
 

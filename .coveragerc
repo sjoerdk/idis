@@ -1,5 +1,5 @@
 [run]
-include = idis/*
-omit = *migrations*, *tests*
+include = app/idis/*
+omit = *migrations*, *tests*, *.html
 plugins =
     django_coverage_plugin

@@ -14,13 +14,14 @@ urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
     # User management
     path("users/", include("idis.users.urls", namespace="users")),
+    path("jobs/", include("idis.jobs.urls", namespace="jobs")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
-    # these url in browser to see how these error pages look like.
+    # these url in browser to see what these error pages look like.
     urlpatterns += [
         path(
             "400/",

@@ -69,7 +69,8 @@ THIRD_PARTY_APPS = [
 ]
 LOCAL_APPS = [
     "idis.users.apps.UsersAppConfig",
-    "idis.core"
+    "idis.core",
+    "idis.jobs"
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps

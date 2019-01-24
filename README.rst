@@ -2,11 +2,13 @@ IDIS
 ====
 
 IDIS is a set of python / django modules that wrap around `CTP <https://mircwiki.rsna.org/index.php?title=MIRC_CTP>`_
-to create an image de-identification server
+to create an image de-identification server that uses
 `DICOM Confidentiality options <http://dicom.nema.org/medical/dicom/current/output/chtml/part15/sect_E.3.html>`_
 
 .. image:: https://travis-ci.org/sjoerdk/idis.svg?branch=master
    :target: https://travis-ci.org/sjoerdk/idis
+.. image:: https://codecov.io/gh/sjoerdk/idis/branch/master/graph/badge.svg
+   :target: https://codecov.io/gh/sjoerdk/idis
 .. image:: https://readthedocs.org/projects/idis/badge/?version=latest
    :target: http://idis.readthedocs.io/en/latest/?badge=latest
    :alt: Documentation Status

@@ -57,3 +57,5 @@ EMAIL_PORT = 1025
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# for encrypted_model_fields.
+FIELD_ENCRYPTION_KEY = 'bgSXvEP-IrEmfG6cSsx-jiMnq8zTsi2LAgf3_r2ew5Y='

@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
     "allauth.account",
     "allauth.socialaccount",
     "rest_framework",
+    "encrypted_model_fields"
 ]
 LOCAL_APPS = [
     "idis.users.apps.UsersAppConfig",

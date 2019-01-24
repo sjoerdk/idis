@@ -61,3 +61,5 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# for encrypted_model_fields.
+FIELD_ENCRYPTION_KEY = '7_0k1_am46x7uHkABgUCz5WErXpIN8XGKXol6vtfVPo='

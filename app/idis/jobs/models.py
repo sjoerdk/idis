@@ -4,7 +4,7 @@ from django.db import models
 from django.conf import settings
 from django.core.files import File
 
-from idis.core.models import EncryptedCharField
+from encrypted_model_fields.fields import EncryptedCharField
 
 
 class Profile(models.Model):

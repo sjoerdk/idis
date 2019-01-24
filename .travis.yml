@@ -1,24 +1,29 @@
 language: python
 services:
-  - postgresql
+- postgresql
 python:
-  - "3.6"
+- '3.6'
 sudo: true
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq build-essential gettext python-dev zlib1g-dev libpq-dev xvfb
-  - sudo apt-get install -qq libtiff4-dev libjpeg8-dev libfreetype6-dev liblcms1-dev libwebp-dev
-  - sudo apt-get install -qq graphviz-dev python-setuptools python3-dev python-virtualenv python-pip
-  - sudo apt-get install -qq firefox automake libtool libreadline6 libreadline6-dev libreadline-dev
-  - sudo apt-get install -qq libsqlite3-dev libxml2 libxml2-dev libssl-dev libbz2-dev wget curl llvm
-  - pip install -r requirements/test.txt
-  - export PYTHONPATH=$PYTHONPATH:$(pwd)/app
+- sudo apt-get update -qq
+- sudo apt-get install -qq build-essential gettext python-dev zlib1g-dev libpq-dev
+  xvfb
+- sudo apt-get install -qq libtiff4-dev libjpeg8-dev libfreetype6-dev liblcms1-dev
+  libwebp-dev
+- sudo apt-get install -qq graphviz-dev python-setuptools python3-dev python-virtualenv
+  python-pip
+- sudo apt-get install -qq firefox automake libtool libreadline6 libreadline6-dev
+  libreadline-dev
+- sudo apt-get install -qq libsqlite3-dev libxml2 libxml2-dev libssl-dev libbz2-dev
+  wget curl llvm
+- pip install -r requirements/test.txt
+- export PYTHONPATH=$PYTHONPATH:$(pwd)/app
 install:
 - pip install -U tox-travis
 script:
 - pytest --cov-report= --cov=.
 after_success:
-  - codecov
+- codecov
 notifications:
   slack:
-    secure: liDThGTqsJX/Tu0oESb+aL0bbP4+CyiuD0XxnZRCEzK9e5RxcDYdcNTnQj6k1cFVka8dYf5FIEsrYpH9aAiuIaNXkEHH510PTQilBdNo3GfkOBU0M3OhgXnP0QrZyTDhrOzO0KISrHyU0zoIm5YYng9LmOaZ06XZkh6bikX3v6BL89Vckuqf7tf9N7o/JFOCO74/4yreSgSo4J7Top/3Bp3usXNOESPa11+ky5rR4ROPu0cNeVg4eli37tLEOIeRE3BMvO0bgI3cfBr+XeTGHoN/G6nSm5Rc5pQr815G93IVRFo24bUtQLbumqVVqcA40Ez+N+fqZ3hi4fj5CEu5LJXLWA7dcH/2i3wNFOflCWvNrNC843zPVMt12fM1V1IAAhcKNKl7f4Yh7PLUeRptkgkxILpWT2izxEHaaw275PolRYQko6xw0Pwfv3FDZcxuZ6Y3B7E/7qyqNz+BISloHTToVXxoW3n4JaewoLkA5NMc0pSBv8DK9tF5HOxipK4k+LHhCAY5yFQV0Op6603EZTvCTPC2wFGChHNfGTPVAjWMDfPtcDPFtexjTwLYUphNPP/zEt+zcYNAyyug9LTIsGafw+yuMlBmo/L+2ZDwS1acAGX1qm9JPfWxW98cHgfPFtCkKKDwPX94fIW3X71qagXUbP81gxw/6d9+H4KBAEM=
+    secure: WO3bD7I8gvM9gH0E5YdJtcul17xT+U8Z2qREFRPArSnObgsy7EP/ptu7w12TmhVmTHjGcwi4rD81WbHG4oPwZkFUpTrMG6OXM/uZ5WBe6REAhxnK+7b0wWSW2khRq4MiSerwRZkI5suRZzZa3cwRrI9AjYZQINm2orbhqbRpC0SXTJEEZ3JP3yoYINF8YB4zcMvadgmSDNhSxNY+ZK/QHgqKqBTgYNMtKjlzbC8Y/F2k7DyJl8Qog2Nwne2z7AP7GkBtgi7Hum9kMq9CpSsttSXeHkBEVRPfBm8sMV6GpyE5/sFvu6TvBfl8nFP374W8dtMDHVpupNKqAXpSak1ZRpUxhUi0E8RXLs4J9260XnJYBqB3KD9pubWWnZlZBlAhvuKZLBz+0syOrFoEWVRwUVFjhxpQLXRcvFH1TrHoU1rXILYSX2oNILpU52Qnw/xkWC3EkMZZqrz2NDaE5ay7xuiX0ZtRLF6rCVSVMTsjLJD9BKMeA0sUcMwlPexXtAw35g6A4ebv2NG10tLISb390MM06cCBRoeOSQyvedxgylCoboILEb/x7GTI9Bdq1Z/xl2+/Pa9SOt3ej1hRqyaeid7SSOMBb15asBKMAC0wOzSgDWXfpvmHQEug0tZtP4Bq65qDyUSNOM9MY+IRqKGwYsajzl7H4tOz18Dauhjx0Fk=

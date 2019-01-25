@@ -81,6 +81,22 @@ class Profile(models.Model):
     )
 
 
+class FileBatch(models.Model):
+    """A collection of files under a single description.
+
+
+    This allows for both arbitrary collections of files as job input, but also human-readable descriptions like
+    for example 'All files for Study xxx'
+    """
+
+    description = models.CharField(
+        max_length=1024,
+        default="",
+        blank=True,
+        help_text="Short description of this batch, max 1024 characters.",
+    )
+
+
 class Job(models.Model):
     """A command to anonymise some data.
 
@@ -144,23 +160,33 @@ class Job(models.Model):
         blank=True,
         help_text="Higher values means higher priority for processing this job",
     )
-    # destination =
+    input_files = models.ForeignKey(
+        FileBatch,
+        null=True,
+        on_delete=models.SET_NULL,
+        help_text="The files that are processed in this job"
+    )
 
 
 class Destination(models.Model):
-    """Contains all info about where data should go.
+    """Something that you can send files to
 
     """
 
     class Meta:
         abstract = True
 
-    name = models.CharField(
-        max_length=1024,
-        default="",
-        blank=True,
-        help_text="Short description of this destination, max 1024 characters.",
-    )
+    def send_file(self, job_file):
+        """Send the given file to the destination
+
+        Parameters
+        ----------
+        job_file: JobFile
+
+        """
+        raise (
+            NotImplementedError("This is an abstract base class. Call a child class")
+        )
 
 
 class Source(models.Model):
@@ -171,20 +197,13 @@ class Source(models.Model):
     class Meta:
         abstract = True
 
-    name = models.CharField(
-        max_length=1024,
-        default="",
-        blank=True,
-        help_text="Short description of this source, max 1024 characters.",
-    )
-
     def get_file(self, file_info):
         """Get the file described in file_info from this source
 
         Parameters
         ----------
-        file_info: IDISFileInfo
-            information defining a single file
+        file_info: FileInfo
+            information uniquely defining a single file
 
         Returns
         -------
@@ -197,25 +216,8 @@ class Source(models.Model):
         )
 
 
-class FileBatch(models.Model):
-    """A collection of files under a single description.
-
-
-    This allows for both arbitrary collections of files as job input, but also human-readable descriptions like
-    for example 'All files for Study xxx'
-    """
-
-    description = models.CharField(
-        max_length=1024,
-        default="",
-        blank=True,
-        help_text="Short description of this batch, max 1024 characters.",
-    )
-
-
-class IDISFileInfo(models.Model):
-    """"All info needed to get a single file. This separate class is needed to distinguish between the django model and
-    the actual file object
+class FileInfo(models.Model):
+    """"Describes a single file and how to get it.
 
     """
 
@@ -228,7 +230,7 @@ class IDISFileInfo(models.Model):
         null=True,
         help_text="The job this file is associated with",
     )
-    source = models.ForeignKey(
+    source_server = models.ForeignKey(
         Source,
         on_delete=models.SET_NULL,
         null=True,
@@ -253,17 +255,17 @@ class IDISFileInfo(models.Model):
 
         Returns
         -------
-        IDISFile
+        JobFile
         """
         path = Path(self.path)
         if path.exists():
-            return IDISFile(job=self.job, path=path)
+            return JobFile(job=self.job, path=path)
         else:
-            self.path = self.source.get_file(self)
+            self.path = self.source_server.get_file(self)
         return File(self.path)
 
 
-class IDISFile:
+class JobFile:
     """ A file in IDIS. Always belongs to a job """
 
     def __init__(self, job, path):
@@ -281,10 +283,16 @@ class IDISFile:
         self.path = path
 
 
-class WadoSource(Source):
+class WadoServer(Source):
     """A wado server and credentials
 
     """
+    name = models.CharField(
+        max_length=1024,
+        default="",
+        blank=True,
+        help_text="Short description of this server, max 1024 characters.",
+    )
 
     hostname = models.CharField(
         max_length=128, help_text="Hostname or IP of WADO server"
@@ -300,12 +308,12 @@ class WadoSource(Source):
 
         Parameters
         ----------
-        file_info: WADOFileInfo
+        file_info: WADOFile
             information to download a single file from WADO
 
         Returns
         -------
-        IDISFile
+        JobFile
             The file
 
         """
@@ -313,12 +321,20 @@ class WadoSource(Source):
         pass
 
 
-class DiskSource(Source):
+class NetworkShare(Source, Destination):
     """A hardisk or share
 
     """
 
-    path = models.CharField(max_length=256, help_text="Path to this share or disk")
+    name = models.CharField(
+        max_length=1024,
+        default="",
+        blank=True,
+        help_text="Short description of this server, max 1024 characters.",
+    )
+
+    hostname = models.CharField(max_length=256, help_text="hostname or ip of the server computer")
+    sharename = models.CharField(max_length=256, help_text="name of the share")
     username = models.CharField(
         max_length=128,
         default=None,
@@ -334,24 +350,37 @@ class DiskSource(Source):
 
         Parameters
         ----------
-        file_info: DiskFileInfo
+        file_info: FileOnDisk
             information to download a single file from WADO
 
         Returns
         -------
-        IDISFile
+        JobFile
             The file
 
         """
         # copy file to local
         pass
 
+    def send_file(self, job_file, destination):
+        """Send the given file to the destination
 
-class WADOFileInfo(IDISFileInfo):
+        Parameters
+        ----------
+        job_file: JobFile
+            send this file
+
+        destination: JobDestination
+            To this destination
+
+        """
+
+
+class WADOFile(FileInfo):
     """A single file coming from a WADO source"""
 
-    source = models.ForeignKey(
-        WadoSource,
+    source_server = models.ForeignKey(
+        WadoServer,
         on_delete=models.SET_NULL,
         null=True,
         help_text="Where this data is coming from",
@@ -366,17 +395,77 @@ class WADOFileInfo(IDISFileInfo):
     )
 
 
-class DiskFileInfo(IDISFileInfo):
+class FileOnDisk(FileInfo):
     """A single file coming from a share somewhere """
 
     path = models.CharField(
         max_length=1024, default="", help_text="Full path of this file"
     )
 
-    source = models.ForeignKey(
-        DiskSource,
+    source_server = models.ForeignKey(
+        NetworkShare,
         on_delete=models.SET_NULL,
         null=True,
         help_text="Where this data is coming from",
         )
 
+
+class Location(models.Model):
+    """A fully specified location to send files"""
+
+    class Meta:
+        abstract = True
+
+    destination = models.ForeignKey(
+        Destination,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="The server that this location is on",
+        )
+
+    def send_file(self, file):
+        """Send the given file to this location
+
+        Parameters
+        ----------
+        file: JobFile
+            file to send
+        Returns
+        -------
+
+        """
+        raise (
+            NotImplementedError("This is an abstract base class. Call a child class")
+        )
+
+
+class Folder(Location):
+    """A folder on a share"""
+
+    destination = models.ForeignKey(
+        NetworkShare,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="The share that this folder is on",
+        )
+
+    path = models.CharField(
+        max_length=1024,
+        default="",
+        blank=True,
+        help_text="The path to this folder, without hostname and sharename",
+    )
+
+    def send_file(self, file):
+        """Send the given file to this location
+
+        Parameters
+        ----------
+        file: JobFile
+            file to send
+        Returns
+        -------
+
+        """
+        # copy this file!
+        pass

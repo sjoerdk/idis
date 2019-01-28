@@ -230,7 +230,7 @@ class FileInfo(models.Model):
         null=True,
         help_text="The job this file is associated with",
     )
-    source_server = models.ForeignKey(
+    source = models.ForeignKey(
         Source,
         on_delete=models.SET_NULL,
         null=True,
@@ -243,11 +243,11 @@ class FileInfo(models.Model):
         null=True,
         help_text="Optional collection of files that this file belongs to",
     )
-    path = models.CharField(
+    local_path = models.CharField(
         max_length=1024,
         default="",
         blank=True,
-        help_text="Location of this file on disk",
+        help_text="Location of this file on local disk",
     )
 
     def get_file(self):
@@ -261,7 +261,7 @@ class FileInfo(models.Model):
         if path.exists():
             return JobFile(job=self.job, path=path)
         else:
-            self.path = self.source_server.get_file(self)
+            self.local_path = self.source.get_file(self)
         return File(self.path)
 
 
@@ -379,7 +379,7 @@ class NetworkShare(Source, Destination):
 class WADOFile(FileInfo):
     """A single file coming from a WADO source"""
 
-    source_server = models.ForeignKey(
+    source = models.ForeignKey(
         WadoServer,
         on_delete=models.SET_NULL,
         null=True,
@@ -402,7 +402,7 @@ class FileOnDisk(FileInfo):
         max_length=1024, default="", help_text="Full path of this file"
     )
 
-    source_server = models.ForeignKey(
+    source = models.ForeignKey(
         NetworkShare,
         on_delete=models.SET_NULL,
         null=True,

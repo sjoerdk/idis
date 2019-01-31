@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 IDIS documentation
-====================================================================
+==================
 
 Contents:
 
@@ -12,8 +12,12 @@ Contents:
    :maxdepth: 2
 
    getting_started
+   settings
+   installation
+   for_developers
    deploy
    authors
+
 
 
 Indices and tables

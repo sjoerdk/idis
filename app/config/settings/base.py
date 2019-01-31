@@ -235,3 +235,10 @@ SOCIALACCOUNT_ADAPTER = "idis.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+# for encrypted_model_fields.
+FIELD_ENCRYPTION_KEY = ''
+
+# for IDIS
+IDIS_CTP_INPUT_FOLDER = ''
+IDIS_CTP_OUTPUT_FOLDER = ''
+IDIS_PRE_FETCHING_FOLDER = ''

@@ -63,3 +63,7 @@ INSTALLED_APPS += ["django_extensions"]  # noqa F405
 # ------------------------------------------------------------------------------
 # for encrypted_model_fields.
 FIELD_ENCRYPTION_KEY = '7_0k1_am46x7uHkABgUCz5WErXpIN8XGKXol6vtfVPo='
+
+IDIS_CTP_INPUT_FOLDER = ''
+IDIS_CTP_OUTPUT_FOLDER = ''
+IDIS_PRE_FETCHING_FOLDER = ''

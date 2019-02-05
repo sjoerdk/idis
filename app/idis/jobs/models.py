@@ -1,4 +1,7 @@
+import abc
+import os
 from pathlib import Path
+from shutil import copyfile
 
 from django.db import models
 from django.conf import settings
@@ -164,20 +167,23 @@ class Job(models.Model):
         FileBatch,
         null=True,
         on_delete=models.SET_NULL,
-        help_text="The files that are processed in this job"
+        help_text="The files that are processed in this job",
     )
 
 
-class Destination(models.Model):
-    """Something that you can send files to
+class Storage(models.Model):
+    """Something you can send files to and/or receive files from
 
+    The built in django storage class django.core.files.storage.Storage is fully based on configuration from the
+    settings file. In IDIS we define storage providers in the database. After long study it seems the inbuilt django
+    system is designed for different purposes. Extending it would needlessly complicate things.
     """
 
     class Meta:
         abstract = True
 
     def send_file(self, job_file):
-        """Send the given file to the destination
+        """Send the given file to this source
 
         Parameters
         ----------
@@ -188,17 +194,9 @@ class Destination(models.Model):
             NotImplementedError("This is an abstract base class. Call a child class")
         )
 
-
-class Source(models.Model):
-    """Contains all information needed to fetch a batch of files
-
-    """
-
-    class Meta:
-        abstract = True
-
-    def get_file(self, file_info):
-        """Get the file described in file_info from this source
+    def download_file_to(self, file_info):
+        """Get the file described in file_info from this source. Stores the file locally in
+        'settings.IDIS_PRE_FETCHING_FOLDER'
 
         Parameters
         ----------
@@ -207,7 +205,7 @@ class Source(models.Model):
 
         Returns
         -------
-        InputFiles
+        JobFile
             The file
 
         """
@@ -217,7 +215,7 @@ class Source(models.Model):
 
 
 class FileInfo(models.Model):
-    """"Describes a single file and how to get it.
+    """"Describes a single remote file and how to get it.
 
     """
 
@@ -231,7 +229,7 @@ class FileInfo(models.Model):
         help_text="The job this file is associated with",
     )
     source = models.ForeignKey(
-        Source,
+        Storage,
         on_delete=models.SET_NULL,
         null=True,
         help_text="Where this data is coming from",
@@ -243,50 +241,189 @@ class FileInfo(models.Model):
         null=True,
         help_text="Optional collection of files that this file belongs to",
     )
-    local_path = models.CharField(
-        max_length=1024,
-        default="",
-        blank=True,
-        help_text="Location of this file on local disk",
-    )
 
-    def get_file(self):
-        """Return a file object for this file. Retrieve from external source if needed.
+    @abc.abstractmethod
+    def file_name(self):
+        """Returns a the filename under which this file can be saved
+
+        Returns
+        -------
+        str:
+            filename for this file.
+        """
+        return
+
+    def get_file(self, pre_fetching_folder=settings.IDIS_PRE_FETCHING_FOLDER):
+        """Return a file object for this file. Retrieve from external source if needed. Downloads to
+        'settings.IDIS_PRE_FETCHING_FOLDER'
 
         Returns
         -------
         JobFile
+            The file described by this info
+
+        Raises
+        ------
+        FileNotFoundError
+            If file cannot be retrieved
+
         """
-        path = Path(self.path)
-        if path.exists():
-            return JobFile(job=self.job, path=path)
-        else:
-            self.local_path = self.source.get_file(self)
-        return File(self.path)
+        # idis
+        return self.source.download_file_to(file_info=self, folder=pre_fetching_folder)
 
 
 class JobFile:
     """ A file in IDIS. Always belongs to a job """
 
-    def __init__(self, job, path):
+    def __init__(self, job_id, path):
         """
 
         Parameters
         ----------
-        job: Job
-            The job that this file belongs to
+        job_id: int
+            The id of the job that this file belongs to
         path: Path
             location of this file on disk
         """
 
-        self.job = job
+        self.job_id = job_id
         self.path = path
 
 
-class WadoServer(Source):
+class SafeFolder:
+    """A safe folder that will will rename files to prevent name clashes
+
+    """
+    def __init__(self, path):
+        """A folder that you can ask for available names so you can avoid name clashes
+
+        Parameters
+        ----------
+        path: str
+            path to folcder
+        """
+        self.path = Path(path)
+
+    def get_available_name(self, file_info):
+        """Get a path to save the given file to. Add numbers to filename to avoid clashes
+
+        Parameters
+        ----------
+        file_info: FileInfo
+
+        Returns
+        -------
+        Path
+            full path including name where this file info might be saved
+
+        """
+        return Path(self.path) / file_info.file_name()
+
+
+class JobFolder(SafeFolder):
+    """ A folder storing job files that will keep files for jobs separated
+
+    """
+
+    def __init__(self, path: str):
+        """ A folder storing job files.
+
+        Parameters
+        ----------
+        path: str
+            full path to this folder
+        """
+        self.path = Path(path)
+
+    def get_available_name(self, file_info):
+        """
+
+        Parameters
+        ----------
+        file_info: FileInfo
+
+        Returns
+        -------
+        str
+            full path including name where this file info might be saved
+
+        """
+        folder = self.path / str(file_info.job.id)
+        return folder / file_info.file_name()
+
+    def get_job_ids(self):
+        """ Returns job id of each job that has files in this folder
+
+        Notes
+        -----
+        Will silently discard any non-int job ids found in folder
+
+        Returns
+        -------
+        List[str]
+            ids of all jobs in this folder
+
+        """
+        dir_names = [x.name for x in self.path.iterdir() if x.is_dir()]
+        job_ids = []
+        for dir_name in dir_names:
+            try:
+                job_ids.append(int(dir_name))
+            except ValueError:
+                next
+        return job_ids
+
+    def get_files(self, job_id: int):
+        """ get paths to all files belonging to the given job
+
+        Returns
+        -------
+        List<JobFile>
+            list with each file belonging to the given job
+
+        Raises
+        ------
+        FileNotFoundError
+            when given job id does not exist in this folder
+
+        """
+        job_path = self.path / str(job_id)
+        if not job_path.exists():
+            raise FileNotFoundError(f"Folder {job_path} for job '{job_id}' could not be found")
+        return [JobFile(job_id=job_id, path=x) for x in job_path.iterdir() if x.is_file()]
+
+
+class IDISServer:
+    """The actual computer of VM that this instance of IDIS runs on
+
+    """
+
+    def __init__(
+        self, pre_fetching_path, CTP_input_path, CTP_output_path, quarantine_path
+    ):
+        """
+
+        Parameters
+        ----------
+        pre_fetching_path: str
+            full path to folder to put newly downloaded files in
+        CTP_input_path: str
+            full path to the folder that CTP reads its input files from
+        CTP_output_path: str
+            full path to CTP output folder
+        quarantine_path: str
+            full path to quarantine directory
+        """
+
+        self.pre_fetching_folder = JobFolder(pre_fetching_path)
+        # self.CTP_server =
+
+
+class WadoServer(Storage):
     """A wado server and credentials
 
     """
+
     name = models.CharField(
         max_length=1024,
         default="",
@@ -303,13 +440,14 @@ class WadoServer(Source):
     )
     port = models.IntegerField(help_text="Port to use for connecting")
 
-    def get_file(self, file_info):
+    def download_file_to(self, file_info, folder):
         """Get file described in file_info
 
         Parameters
         ----------
         file_info: WADOFile
             information to download a single file from WADO
+        folder: Folder
 
         Returns
         -------
@@ -317,52 +455,11 @@ class WadoServer(Source):
             The file
 
         """
-        # create wado connection, actually download
+        # create wado connection
+        # Download to
         pass
 
-
-class NetworkShare(Source, Destination):
-    """A hardisk or share
-
-    """
-
-    name = models.CharField(
-        max_length=1024,
-        default="",
-        blank=True,
-        help_text="Short description of this server, max 1024 characters.",
-    )
-
-    hostname = models.CharField(max_length=256, help_text="hostname or ip of the server computer")
-    sharename = models.CharField(max_length=256, help_text="name of the share")
-    username = models.CharField(
-        max_length=128,
-        default=None,
-        blank=True,
-        help_text="Connect with this user name",
-    )
-    password = EncryptedCharField(
-        max_length=128, default=None, blank=True, help_text="Connect with this password"
-    )
-
-    def get_file(self, file_info):
-        """Get file described in file_info
-
-        Parameters
-        ----------
-        file_info: FileOnDisk
-            information to download a single file from WADO
-
-        Returns
-        -------
-        JobFile
-            The file
-
-        """
-        # copy file to local
-        pass
-
-    def send_file(self, job_file, destination):
+    def send_file(self, job_file, location):
         """Send the given file to the destination
 
         Parameters
@@ -370,14 +467,99 @@ class NetworkShare(Source, Destination):
         job_file: JobFile
             send this file
 
-        destination: JobDestination
+        location: Location
             To this destination
 
         """
+        raise NotImplementedError("No files can be sent via WADO")
+
+
+class NetworkShare(Storage):
+    """A shared network resource
+
+    """
+
+    hostname = models.CharField(
+        max_length=256, help_text="hostname or ip of the server computer"
+    )
+    sharename = models.CharField(max_length=256, help_text="name of the share")
+    username = models.CharField(
+        max_length=128,
+        default=None,
+        blank=True,
+        help_text="Optional. Connect using this user name",
+    )
+    password = EncryptedCharField(
+        max_length=128,
+        default=None,
+        blank=True,
+        help_text="Optional. Connect with this password",
+    )
+
+    def __str__(self):
+        return self.path
+
+    @property
+    def path(self):
+        """Full path to this share
+
+        Returns
+        -------
+        str full path to this share
+
+        """
+        sep = os.path.sep
+        return f"{sep}{sep}{self.hostname}{self.sharename}{sep}"
+
+    def download_file_to(self, file_info, folder):
+        """Get file described in file_info and put it in folder
+
+        Parameters
+        ----------
+        file_info: FileOnDisk
+            information to download a single file from WADO
+        folder: SafeFolder
+            path to download to
+
+        Returns
+        -------
+        JobFile
+            The file
+
+        """
+        source_path = file_info.path
+        destination_path = folder.get_available_name(file_info)
+        os.makedirs(destination_path.parent, exist_ok=True)
+        copyfile(source_path, destination_path)
+
+
+class FileOnDisk(FileInfo):
+    """Information on a single file coming from a share somewhere"""
+
+    path = models.CharField(
+        max_length=1024, default="", help_text="Full path of this file"
+    )
+
+    source = models.ForeignKey(
+        NetworkShare,
+        on_delete=models.SET_NULL,
+        null=True,
+        help_text="Where this data is coming from",
+    )
+
+    def file_name(self):
+        """Returns a the filename under which this file can be saved
+
+        Returns
+        -------
+        str:
+            filename for this file.
+        """
+        return Path(self.path).name
 
 
 class WADOFile(FileInfo):
-    """A single file coming from a WADO source"""
+    """Information on a single file coming from a WADO source"""
 
     source = models.ForeignKey(
         WadoServer,
@@ -394,34 +576,33 @@ class WADOFile(FileInfo):
         max_length=512, default="", help_text="Object Unique Identifier for this file"
     )
 
+    def file_name(self):
+        """Returns a the filename under which this file can be saved
 
-class FileOnDisk(FileInfo):
-    """A single file coming from a share somewhere """
-
-    path = models.CharField(
-        max_length=1024, default="", help_text="Full path of this file"
-    )
-
-    source = models.ForeignKey(
-        NetworkShare,
-        on_delete=models.SET_NULL,
-        null=True,
-        help_text="Where this data is coming from",
-        )
+        Returns
+        -------
+        str:
+            filename for this file.
+        """
+        return self.object_uid
 
 
 class Location(models.Model):
-    """A fully specified location to send files"""
+    """An unambiguous, fully specified location that contains files.
+
+    Where a destination is general, like 'this share', or 'that S3 account', a location is unambiguous, like
+    'this folder on this share' or 'this bucket on this s3 account'
+    """
 
     class Meta:
         abstract = True
 
-    destination = models.ForeignKey(
-        Destination,
+    storage = models.ForeignKey(
+        Storage,
         on_delete=models.SET_NULL,
         null=True,
-        help_text="The server that this location is on",
-        )
+        help_text="The storage that this location is on",
+    )
 
     def send_file(self, file):
         """Send the given file to this location
@@ -438,22 +619,33 @@ class Location(models.Model):
             NotImplementedError("This is an abstract base class. Call a child class")
         )
 
+    def get_all_files(self):
+        """Get all paths to the files at this location
+
+        Returns
+        -------
+        List<str>
+            list of full paths
+
+        """
+        pass
+
 
 class Folder(Location):
     """A folder on a share"""
 
-    destination = models.ForeignKey(
+    storage = models.ForeignKey(
         NetworkShare,
         on_delete=models.SET_NULL,
         null=True,
-        help_text="The share that this folder is on",
-        )
+        help_text="The share that this location is on",
+    )
 
-    path = models.CharField(
+    relative_path = models.CharField(
         max_length=1024,
         default="",
         blank=True,
-        help_text="The path to this folder, without hostname and sharename",
+        help_text="The path to this folder without hostname or sharename",
     )
 
     def send_file(self, file):
@@ -467,5 +659,15 @@ class Folder(Location):
         -------
 
         """
-        # copy this file!
+        self.share.send_file(file, self.relative_path)
+
+    def get_all_files(self):
+        """Get all paths to the files at this location
+
+        Returns
+        -------
+        List<str>
+            list of full paths
+
+        """
         pass

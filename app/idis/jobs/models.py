@@ -1,5 +1,6 @@
 import abc
 import os
+import uuid
 from pathlib import Path
 from shutil import copyfile
 
@@ -253,14 +254,18 @@ class FileInfo(models.Model):
         """
         return
 
-    def get_file(self, pre_fetching_folder=settings.IDIS_PRE_FETCHING_FOLDER):
-        """Return a file object for this file. Retrieve from external source if needed. Downloads to
-        'settings.IDIS_PRE_FETCHING_FOLDER'
+    def download(self, to_folder=settings.IDIS_PRE_FETCHING_FOLDER):
+        """Download the file indicated by this file info. Return a file object for the downloaded file.
+
+        Parameters
+        ----------
+        to_folder: SafeFolder, Optional
+            Folder to download to. Defaults to 'settings.IDIS_PRE_FETCHING_FOLDER'
 
         Returns
         -------
         JobFile
-            The file described by this info
+            The file that has been downloaded
 
         Raises
         ------
@@ -268,8 +273,8 @@ class FileInfo(models.Model):
             If file cannot be retrieved
 
         """
-        # idis
-        return self.source.download_file_to(file_info=self, folder=pre_fetching_folder)
+
+        return self.source.download_file_to(file_info=self, folder=to_folder)
 
 
 class JobFile:
@@ -294,6 +299,7 @@ class SafeFolder:
     """A safe folder that will will rename files to prevent name clashes
 
     """
+
     def __init__(self, path):
         """A folder that you can ask for available names so you can avoid name clashes
 
@@ -305,7 +311,7 @@ class SafeFolder:
         self.path = Path(path)
 
     def get_available_name(self, file_info):
-        """Get a path to save the given file to. Add numbers to filename to avoid clashes
+        """Get a path to save the given file to. Add random string to filename to avoid clashes
 
         Parameters
         ----------
@@ -317,7 +323,15 @@ class SafeFolder:
             full path including name where this file info might be saved
 
         """
-        return Path(self.path) / file_info.file_name()
+        potential_path = Path(self.path) / file_info.file_name()
+        return self._get_available_name_for_path(potential_path)
+
+    @staticmethod
+    def _get_available_name_for_path(path: Path):
+        """ Make sure path does not exist. Return different filename if needed """
+        while path.exists():
+            path = path.parent / str(uuid.uuid4())
+        return path
 
 
 class JobFolder(SafeFolder):
@@ -349,7 +363,7 @@ class JobFolder(SafeFolder):
 
         """
         folder = self.path / str(file_info.job.id)
-        return folder / file_info.file_name()
+        return self._get_available_name_for_path(folder / file_info.file_name())
 
     def get_job_ids(self):
         """ Returns job id of each job that has files in this folder
@@ -389,8 +403,12 @@ class JobFolder(SafeFolder):
         """
         job_path = self.path / str(job_id)
         if not job_path.exists():
-            raise FileNotFoundError(f"Folder {job_path} for job '{job_id}' could not be found")
-        return [JobFile(job_id=job_id, path=x) for x in job_path.iterdir() if x.is_file()]
+            raise FileNotFoundError(
+                f"Folder {job_path} for job '{job_id}' could not be found"
+            )
+        return [
+            JobFile(job_id=job_id, path=x) for x in job_path.iterdir() if x.is_file()
+        ]
 
 
 class IDISServer:

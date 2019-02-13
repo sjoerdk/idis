@@ -113,11 +113,10 @@ def test_job_folder_non_int_job_id(file_on_disk, empty_folder):
 
 @pytest.mark.django_db
 def test_safe_folder_do_not_overwrite(file_on_disk, empty_folder):
+    """Safe folders should not overwrite files, but rather rename if needed"""
     safe_folder = SafeFolder(path=empty_folder)
 
-    # download the same file twice
     file_on_disk.download(safe_folder)
     file_on_disk.download(safe_folder)
 
-    # now there should be two files, because SafeFolders never overwrite files
     assert len([x for x in safe_folder.path.glob('*') if x.is_file()]) == 2

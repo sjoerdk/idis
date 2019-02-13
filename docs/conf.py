@@ -240,7 +240,7 @@ texinfo_documents = [
         "IDIS Documentation",
         """Sjoerd Kerkstra""",
         "IDIS",
-        """Image DeIdentification Service, a wrapper around RSNA CTP for anonymizion of medical images""",
+        """Image DeIdentification Service, a wrapper around RSNA CTP for anonymision of medical images""",
         "Miscellaneous",
     )
 ]

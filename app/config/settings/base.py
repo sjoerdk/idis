@@ -236,9 +236,9 @@ SOCIALACCOUNT_ADAPTER = "idis.users.adapters.SocialAccountAdapter"
 # Your stuff...
 # ------------------------------------------------------------------------------
 # for encrypted_model_fields.
-FIELD_ENCRYPTION_KEY = ''
+FIELD_ENCRYPTION_KEY = env.str('FIELD_ENCRYPTION_KEY', 'fake_encryption_key')
 
 # for IDIS
-IDIS_CTP_INPUT_FOLDER = ''
-IDIS_CTP_OUTPUT_FOLDER = ''
-IDIS_PRE_FETCHING_FOLDER = ''
+IDIS_CTP_INPUT_FOLDER = env.path('IDIS_CTP_INPUT_FOLDER', '/tmp/ctp/input')
+IDIS_CTP_OUTPUT_FOLDER = env.path('IDIS_CTP_OUTPUT_FOLDER', '/tmp/ctp/output')
+IDIS_PRE_FETCHING_FOLDER = env.path('IDIS_PRE_FETCHING_FOLDER', '/tmp/ctp/pre_fetching')

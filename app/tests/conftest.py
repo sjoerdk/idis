@@ -2,7 +2,8 @@ import pytest
 from django.conf import settings
 from django.test import RequestFactory
 
-from idis.jobs.models import Folder, SafeFolder, JobFolder
+from idis.jobs.models import Folder
+from idis.jobs.filehandling import SafeFolder, JobFolder
 from tests.users_tests.factories import UserFactory
 
 
@@ -23,5 +24,6 @@ def request_factory() -> RequestFactory:
 
 @pytest.fixture(autouse=True)
 def pre_fetching_folder(settings, tmpdir):
+    """The folder that IDIS fetches all incoming data into by default"""
     settings.IDIS_PRE_FETCHING_FOLDER = tmpdir.strpath
     return JobFolder(tmpdir.strpath)

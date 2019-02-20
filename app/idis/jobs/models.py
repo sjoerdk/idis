@@ -1,14 +1,14 @@
 import abc
 import os
-import uuid
 from pathlib import Path
 from shutil import copyfile
 
 from django.db import models
 from django.conf import settings
-from django.core.files import File
 
 from encrypted_model_fields.fields import EncryptedCharField
+
+from idis.jobs.filehandling import JobFile, SafeFolder, copy_job_file
 
 
 class Profile(models.Model):
@@ -188,7 +188,7 @@ class Storage(models.Model):
 
         Parameters
         ----------
-        job_file: JobFile
+        job_file: idis.jobs.filehandling.JobFile
 
         """
         raise (
@@ -206,7 +206,7 @@ class Storage(models.Model):
 
         Returns
         -------
-        JobFile
+        idis.jobs.filehandling.JobFile
             The file
 
         """
@@ -245,7 +245,7 @@ class FileInfo(models.Model):
 
     @abc.abstractmethod
     def file_name(self):
-        """Returns a the filename under which this file can be saved
+        """Returns a filename under which this file can be saved
 
         Returns
         -------
@@ -264,7 +264,7 @@ class FileInfo(models.Model):
 
         Returns
         -------
-        JobFile
+        idis.jobs.filehandling.JobFile
             The file that has been downloaded
 
         Raises
@@ -275,166 +275,6 @@ class FileInfo(models.Model):
         """
 
         return self.source.download_file_to(file_info=self, folder=to_folder)
-
-
-class JobFile:
-    """ A file in IDIS. Always belongs to a job """
-
-    def __init__(self, job_id, path):
-        """
-
-        Parameters
-        ----------
-        job_id: int
-            The id of the job that this file belongs to
-        path: Path
-            location of this file on disk
-        """
-
-        self.job_id = job_id
-        self.path = path
-
-
-class SafeFolder:
-    """A safe folder that will will rename files to prevent name clashes
-
-    """
-
-    def __init__(self, path):
-        """A folder that you can ask for available names so you can avoid name clashes
-
-        Parameters
-        ----------
-        path: str
-            path to folcder
-        """
-        self.path = Path(path)
-
-    def get_available_name(self, file_info):
-        """Get a path to save the given file to. Add random string to filename to avoid clashes
-
-        Parameters
-        ----------
-        file_info: FileInfo
-
-        Returns
-        -------
-        Path
-            full path including name where this file info might be saved
-
-        """
-        potential_path = Path(self.path) / file_info.file_name()
-        return self._get_available_name_for_path(potential_path)
-
-    @staticmethod
-    def _get_available_name_for_path(path: Path):
-        """ Make sure path does not exist. Return different filename if needed """
-        while path.exists():
-            path = path.parent / str(uuid.uuid4())
-        return path
-
-
-class JobFolder(SafeFolder):
-    """ A folder storing job files that will keep files for jobs separated
-
-    """
-
-    def __init__(self, path: str):
-        """ A folder storing job files.
-
-        Parameters
-        ----------
-        path: str
-            full path to this folder
-        """
-        self.path = Path(path)
-
-    def get_available_name(self, file_info):
-        """
-
-        Parameters
-        ----------
-        file_info: FileInfo
-
-        Returns
-        -------
-        str
-            full path including name where this file info might be saved
-
-        """
-        folder = self.path / str(file_info.job.id)
-        return self._get_available_name_for_path(folder / file_info.file_name())
-
-    def get_job_ids(self):
-        """ Returns job id of each job that has files in this folder
-
-        Notes
-        -----
-        Will silently discard any non-int job ids found in folder
-
-        Returns
-        -------
-        List[str]
-            ids of all jobs in this folder
-
-        """
-        dir_names = [x.name for x in self.path.iterdir() if x.is_dir()]
-        job_ids = []
-        for dir_name in dir_names:
-            try:
-                job_ids.append(int(dir_name))
-            except ValueError:
-                next
-        return job_ids
-
-    def get_files(self, job_id: int):
-        """ get paths to all files belonging to the given job
-
-        Returns
-        -------
-        List<JobFile>
-            list with each file belonging to the given job
-
-        Raises
-        ------
-        FileNotFoundError
-            when given job id does not exist in this folder
-
-        """
-        job_path = self.path / str(job_id)
-        if not job_path.exists():
-            raise FileNotFoundError(
-                f"Folder {job_path} for job '{job_id}' could not be found"
-            )
-        return [
-            JobFile(job_id=job_id, path=x) for x in job_path.iterdir() if x.is_file()
-        ]
-
-
-class IDISServer:
-    """The actual computer of VM that this instance of IDIS runs on
-
-    """
-
-    def __init__(
-        self, pre_fetching_path, CTP_input_path, CTP_output_path, quarantine_path
-    ):
-        """
-
-        Parameters
-        ----------
-        pre_fetching_path: str
-            full path to folder to put newly downloaded files in
-        CTP_input_path: str
-            full path to the folder that CTP reads its input files from
-        CTP_output_path: str
-            full path to CTP output folder
-        quarantine_path: str
-            full path to quarantine directory
-        """
-
-        self.pre_fetching_folder = JobFolder(pre_fetching_path)
-        # self.CTP_server =
 
 
 class WadoServer(Storage):
@@ -469,7 +309,7 @@ class WadoServer(Storage):
 
         Returns
         -------
-        JobFile
+        idis.jobs.filehandling.JobFile
             The file
 
         """
@@ -482,7 +322,7 @@ class WadoServer(Storage):
 
         Parameters
         ----------
-        job_file: JobFile
+        job_file: idis.jobs.filehandling.JobFile
             send this file
 
         location: Location
@@ -529,26 +369,25 @@ class NetworkShare(Storage):
         sep = os.path.sep
         return f"{sep}{sep}{self.hostname}{self.sharename}{sep}"
 
-    def download_file_to(self, file_info, folder):
+    def download_file_to(self, file_info: FileInfo, folder: SafeFolder):
         """Get file described in file_info and put it in folder
 
         Parameters
         ----------
-        file_info: FileOnDisk
-            information to download a single file from WADO
+        file_info: FileInfo
+            information specifying a single DICOM file
         folder: SafeFolder
             path to download to
 
         Returns
         -------
-        JobFile
+        idis.jobs.filehandling.JobFile
             The file
 
         """
-        source_path = file_info.path
-        destination_path = folder.get_available_name(file_info)
-        os.makedirs(destination_path.parent, exist_ok=True)
-        copyfile(source_path, destination_path)
+
+        job_file = JobFile(job_id=file_info.job.id, path=file_info.path)
+        copy_job_file(job_file, destination=folder)
 
 
 class FileOnDisk(FileInfo):
@@ -566,7 +405,7 @@ class FileOnDisk(FileInfo):
     )
 
     def file_name(self):
-        """Returns a the filename under which this file can be saved
+        """Returns a filename under which this file can be saved
 
         Returns
         -------

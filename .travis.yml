@@ -17,6 +17,7 @@ before_install:
 - sudo apt-get install -qq libsqlite3-dev libxml2 libxml2-dev libssl-dev libbz2-dev
   wget curl llvm
 - pip install -r requirements/test.txt
+- pip install -U git+https://github.com/pydicom/pydicom.git
 - export PYTHONPATH=$PYTHONPATH:$(pwd)/app
 install:
 - pip install -U tox-travis

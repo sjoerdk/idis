@@ -47,7 +47,7 @@ copyright = """2018, Sjoerd Kerkstra"""
 # built documents.
 #
 # The short X.Y version.
-version = "version = 'version = '0.1.22''"
+version = "version = 'version = '0.1.23''"
 # The full version, including alpha/beta/rc tags.
 release = version
 

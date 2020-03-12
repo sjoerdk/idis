@@ -1,4 +1,5 @@
-""" Functions and classes for dealing with CTP. CTP is the java-based program that does the actual anonymization.
+""" Functions and classes for dealing with CTP. CTP is the java-based program that
+does the actual anonymization.
 
 """
 from pathlib import Path
@@ -22,7 +23,8 @@ class CTPQuarantineFolder:
         path: Path
             full path to this quarantine folder
         description: str, optional
-            description of this folder. Used for telling users why file might end up in this folder. Defaults to folder
+            description of this folder. Used for telling users why file might end
+            up in this folder. Defaults to folder
             name
         """
         self.path = Path(path)
@@ -74,7 +76,8 @@ class CTPQuarantineFolder:
         Returns
         -------
         JobFile
-            containing file path and associated job. If file cannot be associated with job JobFile.job_id will be None
+            containing file path and associated job. If file cannot be associated
+            with job JobFile.job_id will be None
 
         Notes
         -----
@@ -94,9 +97,9 @@ class CTPQuarantineFolder:
 
 
 class IDISDICOMDataSet:
-    """Holds a pydicom dataset, adds extra functionality for dealing with IDIS-specific private tags
-
-    Alternative to this would be to add to pydicom itself and post merge requests, but that is for later.
+    """Holds a pydicom dataset, adds extra functionality for dealing with
+    IDIS-specific private tags Alternative to this would be to add to pydicom itself
+    and post merge requests, but that is for later.
     """
 
     PRIVATE_CREATOR = "RADBOUDUMCANONYMIZER"
@@ -137,7 +140,8 @@ class IDISDICOMDataSet:
             for tag in private_tags
             if tag.private_creator == self.PRIVATE_CREATOR
         }
-        # pydicom puts square brackets around the names of private tags to differentiate it from standard tags
+        # pydicom puts square brackets around the names of private tags to
+        # differentiate it from standard tags
         return idis_tags[f"[{tag_name}]"].value
 
 
@@ -153,7 +157,8 @@ class IDISQuarantineFolder(JobFolder):
             full path to this folder
 
         description: str, optional
-            description of this folder. Used for telling users why file might end up in this folder. Defaults to folder
+            description of this folder. Used for telling users why file might
+            end up in this folder. Defaults to folder
             name
 
         description
@@ -165,7 +170,8 @@ class IDISQuarantineFolder(JobFolder):
         return f"IDIS quarantine folder at {self.path}"
 
     def get_files(self, job_id: int):
-        """ get paths to all files belonging to the given job, add source quarantine folder
+        """ get paths to all files belonging to the given job, add source
+        quarantine folder
 
         Returns
         -------
@@ -241,7 +247,8 @@ class IDISCTPQuarantine:
     def create_ctp_folder_mapping(
         self, ctp_quarantine_folders: List[CTPQuarantineFolder]
     ):
-        """Return a mapping from each CTP quarantine folder to the active IDIS quarantine folder that mirrors it
+        """Return a mapping from each CTP quarantine folder to the active IDIS
+        quarantine folder that mirrors it
 
         Parameters
         ----------
@@ -293,7 +300,8 @@ class IDISCTPQuarantine:
         Returns
         -------
         List[QuarantinedJobFile]
-            All files belonging to this job, linked to the quarantine they were found in
+            All files belonging to this job, linked to the quarantine they were
+            found in
 
         Raises
         ------
@@ -341,7 +349,8 @@ class IDISCTPQuarantine:
         Returns
         -------
         List of Path
-            All files belonging to this job, linked to the quarantine they were found in
+            All files belonging to this job, linked to the quarantine they were
+            found in
 
         Raises
         ------
@@ -390,8 +399,9 @@ class IDISCTPQuarantine:
 
         mapping = {}
         for active in active_quarantine_folders:
-            archived = IDISQuarantineFolder(path=self.archived_base_folder / active.path.name,
-                                            description="Archive for " + active.description)
+            archived = IDISQuarantineFolder(
+                path=self.archived_base_folder / active.path.name,
+                description="Archive for " + active.description)
             mapping[active] = archived
         return mapping
 

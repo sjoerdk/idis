@@ -23,12 +23,21 @@ To get a bare-bones running instance of IDIS:
 
     $ pip install -r requirements/local.txt
 
-3. You can then start the site by running
+3. Install postgress and create a database
+
+.. code-block:: console
+
+    $ sudo apt install postgresql postgresql-contrib
+    $ sudo -u postgres createdb idis   # create db 'idis'
+
+4. You can then start the site by running
 
 .. code-block:: console
 
     $ cd app
+    $ export DATABASE_URL=postgres://postgres:postgres@localhost/idis
     $ python manage.py migrate
+    $ python manage.py createsuperuser
     $ python manage.py runserver
 
 You can then navigate to http://127.0.0.1:8000/ in your browser to see the development site.

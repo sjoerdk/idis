@@ -6,8 +6,6 @@ from shutil import copyfile
 from django.db import models
 from django.conf import settings
 
-from encrypted_model_fields.fields import EncryptedCharField
-
 from idis.jobs.filehandling import JobFile, SafeFolder, copy_job_file
 
 
@@ -293,7 +291,7 @@ class WadoServer(Storage):
         max_length=128, help_text="Hostname or IP of WADO server"
     )
     username = models.CharField(max_length=128, help_text="Connect with this user name")
-    password = EncryptedCharField(
+    password = models.CharField(
         max_length=128, help_text="Connect with this password"
     )
     port = models.IntegerField(help_text="Port to use for connecting")
@@ -347,7 +345,7 @@ class NetworkShare(Storage):
         blank=True,
         help_text="Optional. Connect using this user name",
     )
-    password = EncryptedCharField(
+    password = models.CharField(
         max_length=128,
         default=None,
         blank=True,

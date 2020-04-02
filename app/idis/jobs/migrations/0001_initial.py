@@ -2,7 +2,6 @@
 
 from django.db import migrations, models
 import django.db.models.deletion
-import encrypted_model_fields.fields
 
 
 class Migration(migrations.Migration):
@@ -63,7 +62,7 @@ class Migration(migrations.Migration):
                 ('hostname', models.CharField(help_text='hostname or ip of the server computer', max_length=256)),
                 ('sharename', models.CharField(help_text='name of the share', max_length=256)),
                 ('username', models.CharField(blank=True, default=None, help_text='Optional. Connect using this user name', max_length=128)),
-                ('password', encrypted_model_fields.fields.EncryptedCharField(blank=True, default=None, help_text='Optional. Connect with this password')),
+                ('password', models.CharField(blank=True, default=None, help_text='Optional. Connect with this password', max_length=128)),
             ],
             options={
                 'abstract': False,
@@ -109,7 +108,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(blank=True, default='', help_text='Short description of this server, max 1024 characters.', max_length=1024)),
                 ('hostname', models.CharField(help_text='Hostname or IP of WADO server', max_length=128)),
                 ('username', models.CharField(help_text='Connect with this user name', max_length=128)),
-                ('password', encrypted_model_fields.fields.EncryptedCharField(help_text='Connect with this password')),
+                ('password', models.CharField(help_text='Connect with this password', max_length=128)),
                 ('port', models.IntegerField(help_text='Port to use for connecting')),
             ],
             options={

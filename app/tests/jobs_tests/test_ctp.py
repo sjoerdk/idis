@@ -63,15 +63,16 @@ def test_ctp_quarantine(test_resources_folder):
     """Check getting all files from quarantine folder"""
     qf = CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerFullDates")
     files = qf.get_files()
-    assert [x.name for x in files] == ["file1", "file2"]
+    assert set(x.name for x in files) == set(["file1", "file2"])
 
 
 def test_ctp_quarantine_job_files(test_resources_folder):
     """Check getting all files from quarantine folder, but also figure out which job they belong to"""
     qf = CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerFullDates")
     job_files = qf.get_job_files()
-    assert [x.name for x in job_files] == ["file1", "file2"]
-    assert [x.job_id for x in job_files] == [1, 2]
+    assert set(x.name for x in job_files) == {"file1", "file2"}
+    assert set(x.job_id for x in job_files) == {1, 2}
+
 
 
 @pytest.mark.parametrize(

@@ -18,4 +18,4 @@ If you only want to run the tests for a particular app, eg. for `teams`, you can
 
 .. code-block:: console
 
-    $ pytest -k teams_tests
+    $ test -k teams_tests

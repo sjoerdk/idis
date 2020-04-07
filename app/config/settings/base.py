@@ -1,6 +1,7 @@
 """
 Base settings to build other settings files upon.
 """
+import os
 
 import environ
 
@@ -38,7 +39,16 @@ USE_TZ = True
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": env.db("DATABASE_URL", default="postgres://postgres:postgres@localhost/idis")}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.environ.get("POSTGRES_DB", "idis"),
+        "USER": os.environ.get("POSTGRES_USER", "idis"),
+        "PASSWORD": os.environ.get("POSTGRES_PASSWORD", "secretpassword"),
+        "HOST": os.environ.get("POSTGRES_HOST", "localhost"),
+        "PORT": "",
+    }
+}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 # URLS

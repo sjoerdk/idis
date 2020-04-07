@@ -25,3 +25,52 @@ services:
       timeout: 5s
       retries: 5
     restart: always
+
+  web:
+    image: idis/web-test:latest
+    environment:
+      <<: *postgresenv
+    # Use werkzeug debugger in dev, this should never be used in production!
+    # https://django-extensions.readthedocs.io/en/latest/runserver_plus.html
+    command: >-
+      bash -c "
+      python manage.py migrate
+      && python manage.py check_permissions
+      && python manage.py runserver_plus 0.0.0.0:8000 --nopin
+      "
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      # Bind the app directory for live reloading in development
+      - type: bind
+        source: ./app
+        target: /app/
+      # The docker socket is only needed for testing
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+    group_add:
+      - ${DOCKER_GID-999} # The docker group is only needed for testing
+    healthcheck:
+      test: ["CMD-SHELL", "curl http://web:8000/ || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  http:
+    image: idis/http:latest
+    environment:
+      SERVER_NAME: idis.localhost
+      SENDFILE_STATUS: 'off'
+    command: >-
+      bash -c "envsubst '$$SERVER_NAME $$SENDFILE_STATUS  < /tmp/nginx.conf.template > /etc/nginx/nginx.conf
+      && nginx -g 'daemon off;'"
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      web:
+        condition: service_healthy

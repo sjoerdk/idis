@@ -1,3 +1,5 @@
+USER_ID = $(shell id -u)
+
 build_web:
 	docker build \
 		--build-arg COMMIT_ID=$(GIT_COMMIT_ID) \

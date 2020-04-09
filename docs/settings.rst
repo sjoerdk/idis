@@ -38,19 +38,3 @@ Default: ``''`` (Empty string)
 IDIS will temporarily store input files for jobs here before passing them on to CTP.
 
 
-Third party settings
-====================
-
-``FIELD_ENCRYPTION_KEY``
-------------------------
-
-Default: ``''`` (Empty string)
-
-Secret key used by django encrypted_model_fields. See `https://pypi.org/project/django-encrypted-model-fields/`_
-Used by IDIS for storing sensitive information like server passwords
-
-
-
-
-
-

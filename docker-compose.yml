@@ -35,7 +35,6 @@ services:
     command: >-
       bash -c "
       python manage.py migrate
-      && python manage.py check_permissions
       && python manage.py runserver_plus 0.0.0.0:8000 --nopin
       "
     restart: always
@@ -65,7 +64,8 @@ services:
       SERVER_NAME: idis.localhost
       SENDFILE_STATUS: 'off'
     command: >-
-      bash -c "envsubst '$$SERVER_NAME $$SENDFILE_STATUS  < /tmp/nginx.conf.template > /etc/nginx/nginx.conf
+      bash -c "envsubst '$$SERVER_NAME $$SENDFILE_STATUS'  < /tmp/nginx.conf.template > /etc/nginx/nginx.conf
+      && openssl req -x509 -newkey rsa:4096 -keyout /etc/ssl/private/$$SERVER_NAME.key -out /etc/ssl/certs/$$SERVER_NAME.crt -days 365 -nodes -subj '/CN=$$SERVER_NAME'
       && nginx -g 'daemon off;'"
     restart: always
     ports:

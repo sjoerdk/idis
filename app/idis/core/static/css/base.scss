@@ -1,0 +1,24 @@
+// Defined in flatly/variables
+$gray-500: #b4bcc2 !default;
+$blue: #2C3E50 !default;
+$cyan: #3498DB !default;
+
+// Override flatly success colours
+$link-color: $cyan !default;
+$navbar-dark-hover-color: $gray-500 !default;
+$pagination-bg: $blue !default;
+$pagination-hover-bg: darken($blue, 15%) !default;
+$pagination-disabled-bg: lighten($blue, 15%) !default;
+
+@import "node_modules/bootswatch/dist/flatly/variables";
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "node_modules/bootswatch/dist/flatly/bootswatch";
+
+// Fix https://github.com/comic/grand-challenge.org/issues/1201
+.custom-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.custom-select-sm {
+  padding-left: $custom-select-padding-x;
+}

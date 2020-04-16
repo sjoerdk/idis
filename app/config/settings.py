@@ -70,6 +70,10 @@ AUTH_PROFILE_MODULE = "profiles.UserProfile"
 LOGIN_REDIRECT_URL = "/accounts/login-redirect/"
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = LOGIN_REDIRECT_URL
 
+# Do not give message popups saying "you have been logged out". Users are expected
+# to know they have been logged out when they click the logout button
+USERENA_USE_MESSAGES = (False,)
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -246,9 +250,9 @@ THIRD_PARTY_APPS = [
     "django_celery_results",  # database results backend
     "django_celery_beat",  # periodic tasks
     "djcelery_email",  # asynchronous emails
-    "allauth",  # auth, registration and account management
-    "allauth.account",
-    "allauth.socialaccount",
+    "userena",  # user profiles
+    "guardian",  # userena dependency, per object permissions
+    "easy_thumbnails",  # userena dependency
     "rest_framework",  # provides REST API
     "rest_framework.authtoken",  # token auth for REST API
     "crispy_forms",  # bootstrap forms
@@ -264,16 +268,17 @@ THIRD_PARTY_APPS = [
     "markdownx",  # for editing markdown
 ]
 
-LOCAL_APPS = ["idis.core", "idis.jobs"]
+LOCAL_APPS = ["idis.core", "idis.jobs", "idis.profiles"]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
 ADMIN_URL = f'{os.environ.get("DJANGO_ADMIN_URL", "django-admin")}/'
 
 AUTHENTICATION_BACKENDS = (
+    "userena.backends.UserenaAuthenticationBackend",
+    "guardian.backends.ObjectPermissionBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
-
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ.get(
     "SOCIAL_AUTH_GOOGLE_OAUTH2_KEY", ""
 )

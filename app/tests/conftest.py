@@ -4,7 +4,8 @@ from django.test import RequestFactory
 
 from idis.jobs.models import Folder
 from idis.jobs.filehandling import SafeFolder, JobFolder
-from tests.users_tests.factories import UserFactory
+
+from app.tests.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)

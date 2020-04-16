@@ -15,7 +15,7 @@ CTP settings
 ============
 
 ``IDIS_CTP_INPUT_FOLDER``
---------------------------
+-------------------------
 
 Default: ``''`` (Empty string)
 
@@ -31,7 +31,7 @@ Full path to the folder that CTP writes de-identified files to.
 
 
 ``IDIS_PRE_FETCHING_FOLDER``
---------------------------
+----------------------------
 
 Default: ``''`` (Empty string)
 

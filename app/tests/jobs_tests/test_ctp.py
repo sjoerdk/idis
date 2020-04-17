@@ -1,3 +1,4 @@
+from collections import Counter
 from distutils import dir_util
 from pathlib import Path
 
@@ -9,17 +10,18 @@ from tests.jobs_tests import RESOURCE_PATH
 
 @pytest.fixture
 def test_resources_folder(tmpdir):
-    """An example of a CTP quarantine base folder with several stages, some job files and some invalid files
+    """An example of a CTP quarantine base folder with several stages, some job
+    files and some invalid files
 
     Returns
     -------
-    str
+    Path
         path to folder
 
     """
     template_folder = Path(RESOURCE_PATH) / "test_ctp" / "ctp_q"
     dir_util.copy_tree(str(template_folder), str(tmpdir))
-    return tmpdir
+    return Path(tmpdir)
 
 
 @pytest.fixture
@@ -71,7 +73,8 @@ def test_ctp_quarantine(test_resources_folder):
 
 
 def test_ctp_quarantine_job_files(test_resources_folder):
-    """Check getting all files from quarantine folder, but also figure out which job they belong to"""
+    """Check getting all files from quarantine folder, but also figure out which
+     job they belong to"""
     qf = CTPQuarantineFolder(
         test_resources_folder / "DicomAnonymizerFullDates"
     )
@@ -85,7 +88,9 @@ def test_ctp_quarantine_job_files(test_resources_folder):
     ["file8_no_dicom", "file7_no_private_creator", "file6_no_job_id"],
 )
 def test_idis_dicom_dataset_messy_input(test_resources_folder, file_name):
-    """Ensuring responses for messy files. Should return JobFile with None for job id"""
+    """Ensuring responses for messy files. Should return JobFile with None for
+     job id """
+
     qf = CTPQuarantineFolder(
         test_resources_folder / "DicomAnonymizerFaultyFiles"
     )
@@ -95,15 +100,19 @@ def test_idis_dicom_dataset_messy_input(test_resources_folder, file_name):
 
 
 def test_ctp_quarantine_job_files_messy_input(test_resources_folder):
-    """Try to sort quarantine folder with files that have problems.. missing tags, not dicom files etc."""
+    """Try to sort quarantine folder with files that have problems.. missing
+    tags, none dicom files etc."""
+
     qf = CTPQuarantineFolder(
         test_resources_folder / "DicomAnonymizerFaultyFiles"
     )
-
-    # folder with 1 OK, 3 faulty files should not cause exceptions but instead yield some jobs with job_id = None
+    # folder with 1 OK, 3 faulty files should not cause exceptions but
+    # instead yield some jobs with job_id = None
     job_files = qf.get_job_files()
     assert len(job_files) == 4
-    assert [x.job_id for x in job_files] == [1, None, None, None]
+    count = Counter([x.job_id for x in job_files])
+    assert count[1] == 1
+    assert count[None] == 3
 
 
 def test_idis_ctp_quarantine_scraping(idis_ctp_quarantine):
@@ -127,7 +136,9 @@ def test_idis_ctp_quarantine_scraping(idis_ctp_quarantine):
 
 
 def test_idis_ctp_archiving(idis_ctp_quarantine):
-    """You can archive all files for a job, moving them out of the way or regular processing, but not deleting"""
+    """You can archive all files for a job, moving them out of the way or regular
+    processing, but not deleting"""
+
     # make sure there are some files in IDIS quarantine
     idis_ctp_quarantine.scrape()
     assert idis_ctp_quarantine.get_job_ids() == [1, 2, 3]

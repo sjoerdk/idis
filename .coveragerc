@@ -1,5 +1,4 @@
-[run]
-include = app/idis/*
-omit = *migrations*, *tests*, *.html
-plugins =
-    django_coverage_plugin
+[paths]
+source =
+    ./app/
+    /app/

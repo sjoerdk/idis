@@ -8,6 +8,13 @@ build_web:
 		-t idis/web-test:latest \
 		-f dockerfiles/web/Dockerfile \
 		.
+	docker build \
+		--build-arg COMMIT_ID=$(GIT_COMMIT_ID) \
+		--target dist \
+		-t idis/web-test:$(GIT_COMMIT_ID)-$(GIT_BRANCH_NAME) \
+		-t idis/web-test:latest \
+		-f dockerfiles/web/Dockerfile \
+		.
 
 build_http:
 	docker build \

@@ -4,7 +4,7 @@ from django.test import RequestFactory
 
 from idis.jobs.filehandling import JobFolder
 
-from app.tests.factories import UserFactory
+from tests.factories import UserFactory
 
 
 @pytest.fixture(autouse=True)

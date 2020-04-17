@@ -7,7 +7,12 @@ from typing import List
 
 import pydicom
 
-from idis.jobs.filehandling import JobFolder, JobFile, move_job_data, move_job_file
+from idis.jobs.filehandling import (
+    JobFolder,
+    JobFile,
+    move_job_data,
+    move_job_file,
+)
 from pydicom.datadict import add_private_dict_entries
 from pydicom.errors import InvalidDicomError
 
@@ -29,7 +34,9 @@ class CTPQuarantineFolder:
         """
         self.path = Path(path)
         if description:
-            self.description = f"Quarantine folder {self.path.name} ({description})"
+            self.description = (
+                f"Quarantine folder {self.path.name} ({description})"
+            )
         else:
             self.description = f"Quarantine folder {self.path.name}"
 
@@ -134,7 +141,9 @@ class IDISDICOMDataSet:
 
         """
 
-        private_tags = [de for de in self.dataset if hasattr(de, "private_creator")]
+        private_tags = [
+            de for de in self.dataset if hasattr(de, "private_creator")
+        ]
         idis_tags = {
             tag.name: tag
             for tag in private_tags
@@ -184,7 +193,9 @@ class IDISQuarantineFolder(JobFolder):
             when given job id does not exist in this folder
         """
         job_files: JobFile = super().get_files(job_id)
-        return [self.to_quarantine_job_file(job_file) for job_file in job_files]
+        return [
+            self.to_quarantine_job_file(job_file) for job_file in job_files
+        ]
 
     def to_quarantine_job_file(self, job_file: JobFile):
         """Add link to this quarantine dir to given JobFile
@@ -228,8 +239,12 @@ class IDISCTPQuarantine:
         self.base_folder = Path(base_folder)
         self.active_base_folder = self.base_folder / "active"
         self.archived_base_folder = self.base_folder / "archived"
-        self.ctp_folder_mapping = self.create_ctp_folder_mapping(ctp_quarantine_folders)
-        self.archive_mapping = self.create_archive_mapping(self.active_quarantine_folders)
+        self.ctp_folder_mapping = self.create_ctp_folder_mapping(
+            ctp_quarantine_folders
+        )
+        self.archive_mapping = self.create_archive_mapping(
+            self.active_quarantine_folders
+        )
 
     def __str__(self):
         return f"IDIS CTP quarantine at {self.base_folder}"
@@ -319,12 +334,12 @@ class IDISCTPQuarantine:
 
     def get_file_count(self, job_id):
         """Get number of files that are in quarantine for this job
-        
+
         Parameters
         ----------
         job_id: int
             job id to check
-        
+
         Returns
         -------
         int
@@ -401,7 +416,8 @@ class IDISCTPQuarantine:
         for active in active_quarantine_folders:
             archived = IDISQuarantineFolder(
                 path=self.archived_base_folder / active.path.name,
-                description="Archive for " + active.description)
+                description="Archive for " + active.description,
+            )
             mapping[active] = archived
         return mapping
 
@@ -409,7 +425,9 @@ class IDISCTPQuarantine:
 class QuarantinedJobFile(JobFile):
     """A JobFile linked to a certain quarantine directory"""
 
-    def __init__(self, *args, quarantine_folder: CTPQuarantineFolder, **kwargs):
+    def __init__(
+        self, *args, quarantine_folder: CTPQuarantineFolder, **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.quarantine_folder = quarantine_folder
 
@@ -420,7 +438,11 @@ class IDISServer:
     """
 
     def __init__(
-        self, pre_fetching_path, CTP_input_path, CTP_output_path, quarantine_base_path
+        self,
+        pre_fetching_path,
+        CTP_input_path,
+        CTP_output_path,
+        quarantine_base_path,
     ):
         """
 
@@ -438,6 +460,7 @@ class IDISServer:
 
         self.pre_fetching_folder = JobFolder(pre_fetching_path)
         # self.CTP_server =
+
 
 class JobFileParseException(Exception):
     pass

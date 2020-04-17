@@ -3,7 +3,12 @@ import pytest
 from distutils import dir_util
 from pathlib import Path
 
-from idis.jobs.filehandling import JobFolder, SafeFolder, JobFile, copy_job_file
+from idis.jobs.filehandling import (
+    JobFolder,
+    SafeFolder,
+    JobFile,
+    copy_job_file,
+)
 from tests.jobs_tests import RESOURCE_PATH
 
 

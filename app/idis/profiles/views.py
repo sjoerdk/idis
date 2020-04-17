@@ -6,6 +6,7 @@ from userena import views as userena_views
 from idis.profiles.forms import EditProfileForm
 from idis.profiles.utils import signin_redirect
 
+
 def login_redirect(request):
     next_uri = request.GET.get("next")
     redirect_uri = signin_redirect(redirect=next_uri, user=request.user)

@@ -1,6 +1,14 @@
 from django.contrib import admin
 
-from .models import Job, Profile, WadoServer, NetworkShare, WADOFile, FileOnDisk, FileBatch
+from .models import (
+    Job,
+    Profile,
+    WadoServer,
+    NetworkShare,
+    WADOFile,
+    FileOnDisk,
+    FileBatch,
+)
 
 admin.site.register(Job)
 admin.site.register(Profile)

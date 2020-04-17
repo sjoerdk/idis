@@ -10,8 +10,8 @@ class WadoServerFactory(factory.DjangoModelFactory):
 
     name = factory.Sequence(lambda n: f"Wado Source {n:02}")
     hostname = f"http:\\\\{name}"
-    username = 'testuser'
-    password = 'password'
+    username = "testuser"
+    password = "password"
     port = 5000
 
 
@@ -20,9 +20,9 @@ class NetworkShareFactory(factory.DjangoModelFactory):
         model = NetworkShare
 
     hostname = factory.Sequence(lambda n: f"http:\\\\hostname{n:02}")
-    sharename = 'share'
-    username = 'testuser'
-    password = 'testpassword'
+    sharename = "share"
+    username = "testuser"
+    password = "testpassword"
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -54,4 +54,3 @@ class FileOnDiskFactory(factory.DjangoModelFactory):
     source = factory.SubFactory(NetworkShareFactory)
     job = factory.SubFactory(JobFactory)
     batch = None
-

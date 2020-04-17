@@ -19,7 +19,6 @@ urlpatterns = [
     # User management
     path("jobs/", include("idis.jobs.urls", namespace="jobs")),
     path("accounts/", include("idis.profiles.urls")),
-
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

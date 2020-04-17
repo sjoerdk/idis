@@ -6,7 +6,7 @@ from idis.jobs.models import Job
 
 @shared_task
 def process_job(*, job_pk: uuid.UUID):
-    job = Job.objects.get(pk=job_pk)
+    _ = Job.objects.get(pk=job_pk)
 
     # check world
     # get data

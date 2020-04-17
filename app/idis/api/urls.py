@@ -5,34 +5,7 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions, routers
 
-from grandchallenge.algorithms.views import (
-    AlgorithmImageViewSet,
-    AlgorithmViewSet,
-    JobViewSet,
-    ResultViewSet,
-)
-from grandchallenge.cases.views import (
-    ImageViewSet,
-    RawImageFileViewSet,
-    RawImageUploadSessionViewSet,
-)
-from grandchallenge.jqfileupload.views import StagedFileViewSet
-from grandchallenge.reader_studies.views import (
-    AnswerViewSet,
-    QuestionViewSet,
-    ReaderStudyViewSet,
-)
-from grandchallenge.retina_api.views import (
-    ImageLevelAnnotationsForImageViewSet,
-    LandmarkAnnotationSetViewSet,
-    PathologyAnnotationViewSet,
-    QualityAnnotationViewSet,
-    RetinaPathologyAnnotationViewSet,
-    TextAnnotationViewSet,
-)
 from grandchallenge.subdomains.utils import reverse_lazy
-from grandchallenge.workstation_configs.views import WorkstationConfigViewSet
-from grandchallenge.workstations.views import SessionViewSet
 
 app_name = "api"
 

@@ -174,9 +174,13 @@ class JobFolder(SafeFolder):
         try:
             os.rmdir(path)
         except FileNotFoundError:
-            raise JobFolderException(f"Job id {job_id} is not known in this folder")
+            raise JobFolderException(
+                f"Job id {job_id} is not known in this folder"
+            )
         except OSError:
-            raise JobFolderException(f"Cannot remove job id {job_id}, there are still files associated with this id")
+            raise JobFolderException(
+                f"Cannot remove job id {job_id}, there are still files associated with this id"
+            )
 
     def get_unknown_job_files(self):
         """Get files from this folder that could not be associated with any job
@@ -254,7 +258,9 @@ def move_job_file(job_file: JobFile, destination: SafeFolder):
         To this folder
 
     """
-    source_path, destination_path = prepare_job_file_operation(job_file, destination)
+    source_path, destination_path = prepare_job_file_operation(
+        job_file, destination
+    )
     source_path.rename(destination_path)
 
 
@@ -269,7 +275,9 @@ def copy_job_file(job_file: JobFile, destination: SafeFolder):
         To this folder
 
     """
-    source_path, destination_path = prepare_job_file_operation(job_file, destination)
+    source_path, destination_path = prepare_job_file_operation(
+        job_file, destination
+    )
     copyfile(str(source_path), str(destination_path))
 
 
@@ -328,7 +336,11 @@ class IDISServer:
     """
 
     def __init__(
-        self, pre_fetching_path, CTP_input_path, CTP_output_path, quarantine_path
+        self,
+        pre_fetching_path,
+        CTP_input_path,
+        CTP_output_path,
+        quarantine_path,
     ):
         """
 

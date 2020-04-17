@@ -3,6 +3,7 @@ from typing import Union
 from django import template
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
+from django.urls.base import reverse
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 

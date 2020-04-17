@@ -1,6 +1,6 @@
 import os
 import re
-from datetime import datetime, timedelta
+from datetime import timedelta
 from distutils.util import strtobool as strtobool_i
 from django.contrib.messages import constants as messages
 

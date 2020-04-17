@@ -11,43 +11,79 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('jobs', '0001_initial'),
+        ("jobs", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='job',
-            name='creator',
-            field=models.ForeignKey(help_text='The user that created this', null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL),
+            model_name="job",
+            name="creator",
+            field=models.ForeignKey(
+                help_text="The user that created this",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddField(
-            model_name='job',
-            name='input_files',
-            field=models.ForeignKey(help_text='The files that are processed in this job', null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.FileBatch'),
+            model_name="job",
+            name="input_files",
+            field=models.ForeignKey(
+                help_text="The files that are processed in this job",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="jobs.FileBatch",
+            ),
         ),
         migrations.AddField(
-            model_name='job',
-            name='profile',
-            field=models.ForeignKey(help_text='The anonymisation profile to be used', null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.Profile'),
+            model_name="job",
+            name="profile",
+            field=models.ForeignKey(
+                help_text="The anonymisation profile to be used",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="jobs.Profile",
+            ),
         ),
         migrations.AddField(
-            model_name='folder',
-            name='storage',
-            field=models.ForeignKey(help_text='The share that this location is on', null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.NetworkShare'),
+            model_name="folder",
+            name="storage",
+            field=models.ForeignKey(
+                help_text="The share that this location is on",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="jobs.NetworkShare",
+            ),
         ),
         migrations.AddField(
-            model_name='fileondisk',
-            name='batch',
-            field=models.ForeignKey(blank=True, help_text='Optional collection of files that this file belongs to', null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.FileBatch'),
+            model_name="fileondisk",
+            name="batch",
+            field=models.ForeignKey(
+                blank=True,
+                help_text="Optional collection of files that this file belongs to",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="jobs.FileBatch",
+            ),
         ),
         migrations.AddField(
-            model_name='fileondisk',
-            name='job',
-            field=models.ForeignKey(help_text='The job this file is associated with', null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.Job'),
+            model_name="fileondisk",
+            name="job",
+            field=models.ForeignKey(
+                help_text="The job this file is associated with",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="jobs.Job",
+            ),
         ),
         migrations.AddField(
-            model_name='fileondisk',
-            name='source',
-            field=models.ForeignKey(help_text='Where this data is coming from', null=True, on_delete=django.db.models.deletion.SET_NULL, to='jobs.NetworkShare'),
+            model_name="fileondisk",
+            name="source",
+            field=models.ForeignKey(
+                help_text="Where this data is coming from",
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to="jobs.NetworkShare",
+            ),
         ),
     ]

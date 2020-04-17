@@ -48,7 +48,9 @@ def idis_ctp_quarantine(test_resources_folder, empty_folder):
             test_resources_folder / "DicomAnonymizerKeepSafePrivateTags",
             description="Some unsupported private tags might be in your data",
         ),
-        CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerModifiedDates"),
+        CTPQuarantineFolder(
+            test_resources_folder / "DicomAnonymizerModifiedDates"
+        ),
         CTPQuarantineFolder(
             test_resources_folder / "DicomAnonymizerFaultyFiles",
             description="Things went really wrong",
@@ -61,26 +63,32 @@ def idis_ctp_quarantine(test_resources_folder, empty_folder):
 
 def test_ctp_quarantine(test_resources_folder):
     """Check getting all files from quarantine folder"""
-    qf = CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerFullDates")
+    qf = CTPQuarantineFolder(
+        test_resources_folder / "DicomAnonymizerFullDates"
+    )
     files = qf.get_files()
-    assert set(x.name for x in files) == set(["file1", "file2"])
+    assert {x.name for x in files} == {"file1", "file2"}
 
 
 def test_ctp_quarantine_job_files(test_resources_folder):
     """Check getting all files from quarantine folder, but also figure out which job they belong to"""
-    qf = CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerFullDates")
+    qf = CTPQuarantineFolder(
+        test_resources_folder / "DicomAnonymizerFullDates"
+    )
     job_files = qf.get_job_files()
-    assert set(x.name for x in job_files) == {"file1", "file2"}
-    assert set(x.job_id for x in job_files) == {1, 2}
-
+    assert {x.name for x in job_files} == {"file1", "file2"}
+    assert {x.job_id for x in job_files} == {1, 2}
 
 
 @pytest.mark.parametrize(
-    "file_name", ["file8_no_dicom", "file7_no_private_creator", "file6_no_job_id"]
+    "file_name",
+    ["file8_no_dicom", "file7_no_private_creator", "file6_no_job_id"],
 )
 def test_idis_dicom_dataset_messy_input(test_resources_folder, file_name):
     """Ensuring responses for messy files. Should return JobFile with None for job id"""
-    qf = CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerFaultyFiles")
+    qf = CTPQuarantineFolder(
+        test_resources_folder / "DicomAnonymizerFaultyFiles"
+    )
     files = {file.name: file for file in qf.get_files()}
     job_file = qf.path_to_job_file(files[file_name])
     assert job_file.job_id is None
@@ -88,7 +96,9 @@ def test_idis_dicom_dataset_messy_input(test_resources_folder, file_name):
 
 def test_ctp_quarantine_job_files_messy_input(test_resources_folder):
     """Try to sort quarantine folder with files that have problems.. missing tags, not dicom files etc."""
-    qf = CTPQuarantineFolder(test_resources_folder / "DicomAnonymizerFaultyFiles")
+    qf = CTPQuarantineFolder(
+        test_resources_folder / "DicomAnonymizerFaultyFiles"
+    )
 
     # folder with 1 OK, 3 faulty files should not cause exceptions but instead yield some jobs with job_id = None
     job_files = qf.get_job_files()
@@ -134,6 +144,10 @@ def test_idis_ctp_archiving(idis_ctp_quarantine):
     assert idis_ctp_quarantine.get_files(job_id=2) == []
 
     # and the two files should have been moved to archive
-    assert len([x for x in idis_ctp_quarantine.archived_base_folder.rglob('*') if x.is_file()]) == len(files_for_job)
-
-
+    assert len(
+        [
+            x
+            for x in idis_ctp_quarantine.archived_base_folder.rglob("*")
+            if x.is_file()
+        ]
+    ) == len(files_for_job)

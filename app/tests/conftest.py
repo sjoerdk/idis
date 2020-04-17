@@ -2,8 +2,7 @@ import pytest
 from django.conf import settings
 from django.test import RequestFactory
 
-from idis.jobs.models import Folder
-from idis.jobs.filehandling import SafeFolder, JobFolder
+from idis.jobs.filehandling import JobFolder
 
 from app.tests.factories import UserFactory
 

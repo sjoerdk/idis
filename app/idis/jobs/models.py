@@ -1,7 +1,6 @@
 import abc
 import os
 from pathlib import Path
-from shutil import copyfile
 
 from django.db import models
 from django.conf import settings
@@ -23,7 +22,10 @@ class Profile(models.Model):
         return f"Profile '{self.title}'"
 
     title = models.CharField(
-        max_length=64, blank=True, default="", help_text="Short title for this profile"
+        max_length=64,
+        blank=True,
+        default="",
+        help_text="Short title for this profile",
     )
 
     description = models.CharField(
@@ -66,13 +68,16 @@ class Profile(models.Model):
     )
 
     RetainModifiedDates = models.BooleanField(
-        default=True, help_text="Add a certain increment to date and time information"
+        default=True,
+        help_text="Add a certain increment to date and time information",
     )
     RetainPatientCharacteristics = models.BooleanField(
-        default=True, help_text="Keep information like age, sex, height and weight"
+        default=True,
+        help_text="Keep information like age, sex, height and weight",
     )
     RetainDeviceIdentity = models.BooleanField(
-        default=True, help_text="Keep information about the device the scan was made on"
+        default=True,
+        help_text="Keep information about the device the scan was made on",
     )
     RetainUIDs = models.BooleanField(
         default=True, help_text="Keep IDs such as study UID, patient ID etc."
@@ -142,14 +147,19 @@ class Job(models.Model):
         choices=JOB_STATUS_CHOICES, default=PENDING, max_length=32
     )
     error = models.CharField(
-        max_length=1024, default="", blank=True, help_text="Error message, if any"
+        max_length=1024,
+        default="",
+        blank=True,
+        help_text="Error message, if any",
     )
 
     files_downloaded = models.IntegerField(default=0, blank=True)
     files_processed = models.IntegerField(default=0, blank=True)
     files_quarantined = models.IntegerField(default=0, blank=True)
     number_of_retries = models.IntegerField(
-        default=0, blank=True, help_text="Number of times processing has been retried"
+        default=0,
+        blank=True,
+        help_text="Number of times processing has been retried",
     )
     description = models.CharField(
         max_length=1024,
@@ -190,7 +200,9 @@ class Storage(models.Model):
 
         """
         raise (
-            NotImplementedError("This is an abstract base class. Call a child class")
+            NotImplementedError(
+                "This is an abstract base class. Call a child class"
+            )
         )
 
     def download_file_to(self, file_info):
@@ -209,7 +221,9 @@ class Storage(models.Model):
 
         """
         raise (
-            NotImplementedError("This is an abstract base class. Call a child class")
+            NotImplementedError(
+                "This is an abstract base class. Call a child class"
+            )
         )
 
 
@@ -290,7 +304,9 @@ class WadoServer(Storage):
     hostname = models.CharField(
         max_length=128, help_text="Hostname or IP of WADO server"
     )
-    username = models.CharField(max_length=128, help_text="Connect with this user name")
+    username = models.CharField(
+        max_length=128, help_text="Connect with this user name"
+    )
     password = models.CharField(
         max_length=128, help_text="Connect with this password"
     )
@@ -424,11 +440,15 @@ class WADOFile(FileInfo):
     )
 
     study_uid = models.CharField(
-        max_length=512, default="", help_text="UID of the study this file belongs to"
+        max_length=512,
+        default="",
+        help_text="UID of the study this file belongs to",
     )
 
     object_uid = models.CharField(
-        max_length=512, default="", help_text="Object Unique Identifier for this file"
+        max_length=512,
+        default="",
+        help_text="Object Unique Identifier for this file",
     )
 
     def file_name(self):
@@ -471,7 +491,9 @@ class Location(models.Model):
 
         """
         raise (
-            NotImplementedError("This is an abstract base class. Call a child class")
+            NotImplementedError(
+                "This is an abstract base class. Call a child class"
+            )
         )
 
     def get_all_files(self):

@@ -11,8 +11,8 @@ build_web:
 	docker build \
 		--build-arg COMMIT_ID=$(GIT_COMMIT_ID) \
 		--target dist \
-		-t idis/web-test:$(GIT_COMMIT_ID)-$(GIT_BRANCH_NAME) \
-		-t idis/web-test:latest \
+		-t idis/web:$(GIT_COMMIT_ID)-$(GIT_BRANCH_NAME) \
+		-t idis/web:latest \
 		-f dockerfiles/web/Dockerfile \
 		.
 

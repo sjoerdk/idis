@@ -8,8 +8,6 @@ to create an image de-identification server that uses
 .. image:: https://github.com/sjoerdk/idis/workflows/CI/badge.svg
    :target: https://github.com/sjoerdk/idis/actions?query=workflow%3ACI+branch%3Amaster
    :alt: Build Status
-.. image:: https://travis-ci.org/sjoerdk/idis.svg?branch=master
-   :target: https://travis-ci.org/sjoerdk/idis
 .. image:: https://codecov.io/gh/sjoerdk/idis/branch/master/graph/badge.svg
    :target: https://codecov.io/gh/sjoerdk/idis
 .. image:: https://readthedocs.org/projects/idis/badge/?version=latest

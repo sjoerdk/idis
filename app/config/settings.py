@@ -268,7 +268,7 @@ THIRD_PARTY_APPS = [
     "markdownx",  # for editing markdown
 ]
 
-LOCAL_APPS = ["idis.core", "idis.jobs", "idis.profiles"]
+LOCAL_APPS = ["idis.core", "idis.jobs", "idis.profiles", "idis.pipeline"]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 

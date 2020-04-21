@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import (
+from idis.jobs.models import (
     Job,
     Profile,
     WadoServer,

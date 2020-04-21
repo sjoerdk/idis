@@ -36,7 +36,7 @@ Credits
 -------
 
 * This package was created with Cookiecutter_ and the `pydanny/cookiecutter-django/`_ project template.
-* Project structure, docker-compose and most features are heavily based on / blatant copies of `comic/grand-challenge.org:`_
+* Project structure, docker-compose and most features are heavily based on / blatant copies of `comic/grand-challenge.org`_
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`pydanny/cookiecutter-django/`:  https://github.com/pydanny/cookiecutter-django/

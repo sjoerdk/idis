@@ -401,6 +401,9 @@ CELERY_BEAT_SCHEDULE = {
 }
 CELERY_TASK_ROUTES = {}
 
+# The name of the group whose members can edit jobs and destinations
+JOB_ADMINS_GROUP_NAME = "job_admins"
+
 # for IDIS
 IDIS_CTP_INPUT_FOLDER = os.environ.get(
     "IDIS_CTP_INPUT_FOLDER", "/tmp/ctp/input"

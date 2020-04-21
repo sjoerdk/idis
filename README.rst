@@ -40,7 +40,7 @@ Credits
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`pydanny/cookiecutter-django/`:  https://github.com/pydanny/cookiecutter-django/
-.. _`comic/grand-challenge.org:` https://github.com/comic/grand-challenge.org
+.. _`comic/grand-challenge.org`: https://github.com/comic/grand-challenge.org
 
 
 

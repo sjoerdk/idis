@@ -76,3 +76,63 @@ services:
     depends_on:
       web:
         condition: service_healthy
+
+  redis:
+    image: redis:4.0
+    command: redis-server --appendonly yes
+    restart: always
+    ports:
+      - "6379:6379" # Only required for running django locally
+
+  celery_worker:
+    image: idis/web-test:latest
+    environment:
+      <<: *postgresenv
+    restart: always
+    command: "celery -A config worker -l info -c 1"
+    scale: 1
+    hostname: "celery-worker"
+    depends_on:
+      web:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      # Bind the app directory for live reloading in development
+      - type: bind
+        source: ./app
+        target: /app/
+
+  celery_beat:
+    image: idis/web-test:latest
+    environment:
+      <<: *postgresenv
+    restart: always
+    command: >-
+      bash -c "
+      rm -f /tmp/celerybeat.pid
+      && celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler --pidfile=\"/tmp/celerybeat.pid\"
+      "
+    depends_on:
+      web:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  flower:
+    image: mher/flower
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+    ports:
+      - "5555:5555"
+    depends_on:
+      redis:
+        condition: service_started
+    restart: always
+
+networks:
+  default:

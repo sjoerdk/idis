@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth import get_user_model
 
 # Create your models here.
 # IncomingFile
@@ -27,7 +28,7 @@ class Stream(models.Model):
     output_folder = models.CharField(
         blank=False, null=True, default=None, max_length=512
     )
-    idis_project = models.ForeignKey(
+    idis_profile = models.ForeignKey(
         to="jobs.Profile",
         null=True,
         default=None,
@@ -35,4 +36,10 @@ class Stream(models.Model):
     )
     pims_key = models.CharField(
         blank=False, null=True, default=None, max_length=128
+    )
+    contact = models.ForeignKey(
+        to=get_user_model(),
+        null=True,
+        default=None,
+        on_delete=models.SET_DEFAULT,
     )

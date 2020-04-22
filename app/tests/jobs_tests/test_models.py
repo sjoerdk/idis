@@ -45,7 +45,8 @@ def test_encrypted_char_field():
 
 @pytest.mark.django_db
 def test_file_on_disk_download(pre_fetching_folder, file_on_disk):
-    """Basic retrieval of files from a disk location using the django model FileOnDisk"""
+    """Basic retrieval of files from a disk location using the django model
+     FileOnDisk"""
     # at the start the pre-fetching folder is empty
     assert len(list(pre_fetching_folder.path.glob("*"))) == 0
 

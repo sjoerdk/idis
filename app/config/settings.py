@@ -394,11 +394,12 @@ CONTAINER_EXEC_DOCKER_RUNTIME = os.environ.get(
 )
 
 CELERY_BEAT_SCHEDULE = {
-    "cleanup_stale_uploads": {
-        "task": "grandchallenge.jqfileupload.tasks.cleanup_stale_uploads",
-        "schedule": timedelta(hours=1),
+    "run_celery_test": {
+        "task": "idis.pipeline.tasks.run_test_task",
+        "schedule": timedelta(seconds=2),
     },
 }
+
 CELERY_TASK_ROUTES = {}
 
 # The name of the group whose members can edit jobs and destinations

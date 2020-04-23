@@ -343,4 +343,5 @@ idis/media/
 
 .pytest_cache/
 
-
+### temp build vars used by ansible
+vars

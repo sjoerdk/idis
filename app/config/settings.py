@@ -316,6 +316,11 @@ LOGGING = {
             "handlers": ["console"],
             "propagate": True,
         },
+        "idissend": {
+            "level": "WARNING",
+            "handlers": ["console"],
+            "propagate": True,
+        },
         "django.db.backends": {
             "level": "ERROR",
             "handlers": ["console"],
@@ -395,8 +400,8 @@ CONTAINER_EXEC_DOCKER_RUNTIME = os.environ.get(
 
 CELERY_BEAT_SCHEDULE = {
     "run_celery_test": {
-        "task": "idis.pipeline.tasks.run_test_task",
-        "schedule": timedelta(seconds=2),
+        "task": "idis.pipeline.tasks.run_pipeline_once",
+        "schedule": timedelta(seconds=30),
     },
 }
 
@@ -405,7 +410,12 @@ CELERY_TASK_ROUTES = {}
 # The name of the group whose members can edit jobs and destinations
 JOB_ADMINS_GROUP_NAME = "job_admins"
 
-# for IDIS
+##############################################################################
+#
+# IDIS
+#
+##############################################################################
+# CTP folders
 IDIS_CTP_INPUT_FOLDER = os.environ.get(
     "IDIS_CTP_INPUT_FOLDER", "/tmp/ctp/input"
 )
@@ -415,6 +425,34 @@ IDIS_CTP_OUTPUT_FOLDER = os.environ.get(
 IDIS_PRE_FETCHING_FOLDER = os.environ.get(
     "IDIS_PRE_FETCHING_FOLDER", "/tmp/ctp/pre_fetching"
 )
+
+##############################################################################
+#
+# pipeline app
+#
+##############################################################################
+# all data for all pipeline stages goes here
+PIPELINE_BASE_PATH = os.environ.get("PIPELINE_BASE_PATH", "/tmp/idissend")
+
+# Connection and credentials for speaking to IDIS API
+PIPELINE_IDIS_USERNAME = os.environ.get("PIPELINE_IDIS_USERNAME", "SVC1234")
+PIPELINE_IDIS_TOKEN = os.environ.get("PIPELINE_IDIS_TOKEN", "a_token")
+PIPELINE_IDIS_WEB_API_SERVER_NAME = os.environ.get(
+    "PIPELINE_IDIS_WEB_API_SERVER_NAME", "p01"
+)
+PIPELINE_IDIS_WEB_API_SERVER_URL = os.environ.get(
+    "PIPELINE_IDIS_WEB_API_SERVER_URL", "https://umcradanonp11.umcn.nl/p01"
+)
+
+# Holds IDIS job ids
+PIPELINE_RECORDS_DB_PATH = os.environ.get(
+    "PIPELINE_RECORDS_DB_PATH", PIPELINE_BASE_PATH + "/records_db.sqlite"
+)
+
+# Indicate which local path corresponds to which UNC paths.
+# This makes it possible to expose local data to IDIS servers
+PIPELINE_LOCAL_PATH = os.environ.get("PIPELINE_LOCAL_PATH", "/")
+PIPELINE_UNC_PATH = os.environ.get("PIPELINE_UNC_PATH", r"\\server\share")
 
 
 # Set which template pack to use for forms
@@ -435,6 +473,7 @@ if DEBUG:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
     LOGGING["loggers"]["idis"]["level"] = "DEBUG"
+    LOGGING["loggers"]["idissend"]["level"] = "DEBUG"
 
     if ENABLE_DEBUG_TOOLBAR:
         INSTALLED_APPS += ("debug_toolbar",)

@@ -2,6 +2,10 @@ import factory
 
 from django.conf import settings
 from idis.jobs.models import WadoServer, FileOnDisk, NetworkShare, Job, Profile
+from idis.pipeline.models import Stream
+
+
+UNBEATABLE_TEST_PASSWORD = "testpasswd"
 
 
 class WadoServerFactory(factory.DjangoModelFactory):
@@ -29,6 +33,15 @@ class UserFactory(factory.DjangoModelFactory):
     class Meta:
         model = settings.AUTH_USER_MODEL
 
+    username = factory.Sequence(lambda n: f"test_user_{n:04}")
+    email = factory.LazyAttribute(lambda u: "%s@test.com" % u.username)
+    password = factory.PostGenerationMethodCall(
+        "set_password", UNBEATABLE_TEST_PASSWORD
+    )
+    is_active = True
+    is_staff = False
+    is_superuser = False
+
 
 class ProfileFactory(factory.DjangoModelFactory):
     class Meta:
@@ -54,3 +67,16 @@ class FileOnDiskFactory(factory.DjangoModelFactory):
     source = factory.SubFactory(NetworkShareFactory)
     job = factory.SubFactory(JobFactory)
     batch = None
+
+
+class StreamFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Stream
+
+    name = factory.Sequence(lambda n: f"stream_{n}")
+    output_folder = factory.Sequence(
+        lambda n: r"\\someshare\ouput_stream_" + str(n)
+    )
+    idis_profile = factory.SubFactory(ProfileFactory)
+    pims_key = "123"
+    contact = factory.SubFactory(UserFactory)

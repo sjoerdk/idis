@@ -46,17 +46,17 @@ vars_git_branch_name := $(shell git rev-parse --abbrev-ref HEAD | sed "s/[^[:aln
 vars_git_docker_images_file = idis_docker_images$(vars_git_commit_id)$(vars_git_branch_name).tgz
 
 clean_vars:
-	-rm vars/anonserver_make_vars.yml
+	-rm vars/idis_build_vars.yml
 	-rmdir vars
 
-refresh_vars: clean_vars vars/anonserver_make_vars.yml
+refresh_vars: clean_vars vars/idis_build_vars.yml
 
 vars_dir:
 	mkdir vars
 
-vars: clean_vars vars/anonserver_make_vars.yml
+vars: clean_vars vars/idis_build_vars.yml
 
-vars/anonserver_make_vars.yml: vars_dir
+vars/idis_build_vars.yml: vars_dir
 
 	@echo "git_commit_id: \"$(vars_git_commit_id)\"" > $@
 	@echo "git_branch_name: \"$(vars_git_branch_name)\"" >> $@

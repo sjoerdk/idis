@@ -29,7 +29,7 @@ def run_pipeline_once():
     IDIS_WEB_API_SERVER_NAME = settings.PIPELINE_IDIS_WEB_API_SERVER_NAME
     IDIS_WEB_API_SERVER_URL = settings.PIPELINE_IDIS_WEB_API_SERVER_URL
 
-    RECORDS_DB_PATH = settings.PIPELINE_RECORDS_DB_PATH
+    RECORDS_DB_URL = settings.PIPELINE_RECORDS_DB_URL
 
     # init #
     STAGES_BASE_PATH.mkdir(
@@ -71,7 +71,7 @@ def run_pipeline_once():
     )
 
     records = IDISSendRecords(
-        session_maker=get_db_sessionmaker(RECORDS_DB_PATH)
+        session_maker=get_db_sessionmaker(RECORDS_DB_URL)
     )
 
     pending = PendingAnon(

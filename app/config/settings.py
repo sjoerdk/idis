@@ -447,7 +447,7 @@ PIPELINE_IDIS_WEB_API_SERVER_URL = os.environ.get(
 # Holds IDIS job ids
 PIPELINE_RECORDS_DB_URL = os.environ.get(
     "PIPELINE_RECORDS_DB_URL",
-    "sqlite:///" + PIPELINE_BASE_PATH + "/records_db.sqlite",
+    "sqlite:////" + PIPELINE_BASE_PATH + "/records_db.sqlite",
 )
 
 # Indicate which local path corresponds to which UNC paths.

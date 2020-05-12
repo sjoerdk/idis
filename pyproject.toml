@@ -53,8 +53,8 @@ django-guardian = "!=2.2.0"
 django-markdownx = "^3.0.1"
 django-filter = "^2.2.0"
 django-allauth = "*"
-idissend = "^2.0.0"
 anonapi = "^1.1.2"
+idissend = "^2.0.2"
 
 [tool.poetry.dev-dependencies]
 pytest-django = "*"

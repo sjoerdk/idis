@@ -741,7 +741,7 @@ description = "Automate sending incoming files to IDIS anonymization server"
 name = "idissend"
 optional = false
 python-versions = "~=3.6"
-version = "2.0.1"
+version = "2.0.2"
 
 [package.dependencies]
 Click = ">=7.0"
@@ -1778,7 +1778,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "34de061b8852328e991c96553977dc88800d007b4e4c0d0313abd1a8f53955c6"
+content-hash = "141f720f3e55f6cb0a58230a4e7fcb571a82c0724f54830f32454a7760203519"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -2096,8 +2096,8 @@ httptools = [
     {file = "httptools-0.1.1.tar.gz", hash = "sha256:41b573cf33f64a8f8f3400d0a7faf48e1888582b6f6e02b82b9bd4f0bf7497ce"},
 ]
 idissend = [
-    {file = "idissend-2.0.1-py2.py3-none-any.whl", hash = "sha256:63b1173e679e3aaed835a5229b7e05fd0cea3d9de896fb897c751d688afe1cdd"},
-    {file = "idissend-2.0.1.tar.gz", hash = "sha256:777ec66a59cfcc117f25ee87f63a15c42fa85b5340f137ff57a6e97e01a395ee"},
+    {file = "idissend-2.0.2-py2.py3-none-any.whl", hash = "sha256:1c708916bc1f21355c1b62f27daae868e5d36804480b79f1817c47363cde6ca5"},
+    {file = "idissend-2.0.2.tar.gz", hash = "sha256:3e39a5c0b21b3d10448d64d5ad6bcaa8a881ddcb992bd2123981f1118e330834"},
 ]
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},

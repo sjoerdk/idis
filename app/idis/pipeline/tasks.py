@@ -13,7 +13,17 @@ from pathlib import Path
 
 @shared_task
 def run_pipeline_once():
-    # TODO: Bring the code below further into the django world.
+    """Check for new files, send to IDIS, send finished on to final distination, etc.
+    """
+
+    pipeline = init_pipeline()
+    pipeline.incoming.assert_all_paths()
+    pipeline.run_once()
+
+
+def init_pipeline() -> DefaultPipeline:
+    """Initialise a default pipeline based on django settings
+    """
 
     # parameters #
     BASE_PATH = Path(
@@ -105,6 +115,4 @@ def run_pipeline_once():
         trash=trash,
         errored=errored,
     )
-
-    pipeline.incoming.assert_all_paths()
-    pipeline.run_once()
+    return pipeline

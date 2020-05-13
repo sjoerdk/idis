@@ -19,11 +19,14 @@ def a_default_pipeline(
     * stores data in tmp dir
     * two streams
     * communication with IDIS web API is mocked
+    * saving job records in memory only
     """
     _ = StreamFactory()
     _ = StreamFactory()
 
     monkeypatch.setattr(settings, "PIPELINE_BASE_PATH", Path(tmpdir))
+    monkeypatch.setattr(settings, "PIPELINE_RECORDS_DB_URL", "sqlite://")
+
     pipeline = init_pipeline()
     pipeline.pending.idis_connection.client_tool = mock_anon_client_tool
     return pipeline

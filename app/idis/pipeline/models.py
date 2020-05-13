@@ -44,6 +44,7 @@ class Stream(models.Model):
         on_delete=models.SET_DEFAULT,
     )
 
-    def idis_profile_name(self):
+    @property
+    def idis_profile_name(self) -> str:
         """IDIS profile as string.  For use as key in IDIS"""
         return str(self.idis_profile.title)

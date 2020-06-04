@@ -68,7 +68,7 @@ def init_pipeline() -> DefaultPipeline:
         name="incoming",
         path=STAGES_BASE_PATH / "incoming",
         streams=streams,
-        cool_down=0,
+        cool_down=5,
     )
 
     connection = IDISConnection(

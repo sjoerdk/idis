@@ -11,9 +11,7 @@ to create an image de-identification server.
 
 A basic CTP installation offers a single de-identification pipeline that outputs to a single location.
 IDIS extends this by grouping files in jobs. Each job has its own input, processing options and output. Jobs can
-be created via django website or via a web-based rest API. This makes it possible for a single server to be used by
-multiple users and projects.
-
+be created via a django website or via a web-based rest API.
 
 Contents
 ========

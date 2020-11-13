@@ -71,6 +71,12 @@ def init_pipeline() -> DefaultPipeline:
         cool_down=5,
     )
 
+    cooled_down = Stage(
+        name="cooled_down",
+        path=STAGES_BASE_PATH / "cooled_down",
+        streams=streams,
+    )
+
     connection = IDISConnection(
         client_tool=AnonClientTool(username=IDIS_USERNAME, token=IDIS_TOKEN),
         servers=[
@@ -110,6 +116,7 @@ def init_pipeline() -> DefaultPipeline:
 
     pipeline = DefaultPipeline(
         incoming=incoming,
+        cooled_down=cooled_down,
         pending=pending,
         finished=finished,
         trash=trash,

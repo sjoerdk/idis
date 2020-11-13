@@ -741,7 +741,7 @@ description = "Automate sending incoming files to IDIS anonymization server"
 name = "idissend"
 optional = false
 python-versions = "~=3.6"
-version = "2.0.3"
+version = "2.0.7"
 
 [package.dependencies]
 Click = ">=7.0"

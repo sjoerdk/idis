@@ -745,7 +745,7 @@ version = "2.0.7"
 
 [package.dependencies]
 Click = ">=7.0"
-anonapi = ">=1.0.10"
+anonapi = "*"
 sqlalchemy = "*"
 
 [[package]]
@@ -1778,7 +1778,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "bf90eca05e93f7650aea862e152f5de6a55cf4ba52e5be4b81e779858fbc87ee"
+content-hash = "04ed1687dd23f0fbd8722cd354cd68129f40e1dc23abfdef974f84f9093c022b"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -2096,8 +2096,8 @@ httptools = [
     {file = "httptools-0.1.1.tar.gz", hash = "sha256:41b573cf33f64a8f8f3400d0a7faf48e1888582b6f6e02b82b9bd4f0bf7497ce"},
 ]
 idissend = [
-    {file = "idissend-2.0.3-py2.py3-none-any.whl", hash = "sha256:dfc82d14cdd498d41ee28ca8d3dfe48924c6ea38b39f5e5c21520ca859717214"},
-    {file = "idissend-2.0.3.tar.gz", hash = "sha256:56f4f078e23aef7cfb9e1e4f3a958b632ddda927ccaa54ab84b6df4d8894f92a"},
+    {file = "idissend-2.0.7-py2.py3-none-any.whl", hash = "sha256:f55b7391545e7c21422677747f3f91a0120566131b030af0f3fba194291883fd"},
+    {file = "idissend-2.0.7.tar.gz", hash = "sha256:78a9525f638284f1f276244244875aa233c7d7f06a93d55f9299d879f9bec19b"},
 ]
 idna = [
     {file = "idna-2.9-py2.py3-none-any.whl", hash = "sha256:a068a21ceac8a4d63dbfd964670474107f541babbd2250d61922f029858365fa"},

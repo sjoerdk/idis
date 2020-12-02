@@ -54,7 +54,7 @@ django-markdownx = "^3.0.1"
 django-filter = "^2.2.0"
 django-allauth = "*"
 anonapi = "^1.1.2"
-idissend = "^2.0.7"
+idissend = "^2.2.2"
 
 [tool.poetry.dev-dependencies]
 pytest-django = "*"

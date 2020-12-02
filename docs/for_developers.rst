@@ -44,15 +44,15 @@ Running coverage locally
     $ docker-compose run --rm  web bash -c "COVERAGE_FILE=/tmp/cov pytest --cov-report term --cov=."
 
 
-Adding new dependencies
------------------------
+Managing dependencies
+---------------------
 
 Poetry is used to manage the dependencies of the platform.
 To add a new dependency use
 
 .. code-block:: console
 
-    $ poetry add <whatever>
+    $ poetry add <your lib>
 
 and then commit the ``pyproject.toml`` and ``poetry.lock``.
 If this is a development dependency then use the ``--dev`` flag, see the ``poetry`` documentation for more details.

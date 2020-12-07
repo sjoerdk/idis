@@ -4,7 +4,7 @@ from unittest.mock import Mock
 
 import pytest
 from anonapi.testresources import MockAnonClientTool
-from idissend.pipeline import DefaultPipeline
+from idissend.pipeline import IDISPipeline
 
 from idis.pipeline.tasks import run_pipeline_once, init_pipeline, settings
 from tests.factories import StreamFactory
@@ -12,9 +12,9 @@ from tests.pipeline_tests import RESOURCE_PATH
 
 
 @pytest.fixture
-def a_default_pipeline(
+def an_idis_pipeline(
     monkeypatch, tmpdir, mock_anon_client_tool
-) -> DefaultPipeline:
+) -> IDISPipeline:
     """A default modality import pipeline for testing:
     * stores data in tmp dir
     * two streams
@@ -55,11 +55,11 @@ def test_run_pipeline_once():
 
 @pytest.mark.django_db
 def test_run_pipeline_with_django_objects(
-    a_default_pipeline, mock_anon_client_tool
+    an_idis_pipeline, mock_anon_client_tool
 ):
     """Pipeline replaces some standard idissend objects with django ORM equivalents.
     Verify that this works """
-    pipeline = a_default_pipeline
+    pipeline = an_idis_pipeline
     pipeline.incoming.assert_all_paths()  # make sure the incoming folders exist
 
     # run pipeline empty, for good measure

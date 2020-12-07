@@ -17,7 +17,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-celery = "*"
+celery = {extras = ["redis", "sqs"], version = "^4.4.6"}
 redis = "*"
 django = "<3.1"
 django-countries = "*"

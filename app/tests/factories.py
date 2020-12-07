@@ -1,5 +1,6 @@
 import factory
 
+from factory.django import DjangoModelFactory
 from django.conf import settings
 from idis.jobs.models import WadoServer, FileOnDisk, NetworkShare, Job, Profile
 from idis.pipeline.models import Stream
@@ -8,7 +9,7 @@ from idis.pipeline.models import Stream
 UNBEATABLE_TEST_PASSWORD = "testpasswd"
 
 
-class WadoServerFactory(factory.DjangoModelFactory):
+class WadoServerFactory(DjangoModelFactory):
     class Meta:
         model = WadoServer
 
@@ -19,7 +20,7 @@ class WadoServerFactory(factory.DjangoModelFactory):
     port = 5000
 
 
-class NetworkShareFactory(factory.DjangoModelFactory):
+class NetworkShareFactory(DjangoModelFactory):
     class Meta:
         model = NetworkShare
 
@@ -29,7 +30,7 @@ class NetworkShareFactory(factory.DjangoModelFactory):
     password = "testpassword"
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(DjangoModelFactory):
     class Meta:
         model = settings.AUTH_USER_MODEL
 
@@ -43,14 +44,14 @@ class UserFactory(factory.DjangoModelFactory):
     is_superuser = False
 
 
-class ProfileFactory(factory.DjangoModelFactory):
+class ProfileFactory(DjangoModelFactory):
     class Meta:
         model = Profile
 
     title = factory.Sequence(lambda n: f"test profile {n:02}")
 
 
-class JobFactory(factory.DjangoModelFactory):
+class JobFactory(DjangoModelFactory):
     class Meta:
         model = Job
 
@@ -59,7 +60,7 @@ class JobFactory(factory.DjangoModelFactory):
     description = factory.Sequence(lambda n: f"Test job number {n:05}")
 
 
-class FileOnDiskFactory(factory.DjangoModelFactory):
+class FileOnDiskFactory(DjangoModelFactory):
     class Meta:
         model = FileOnDisk
 
@@ -69,7 +70,7 @@ class FileOnDiskFactory(factory.DjangoModelFactory):
     batch = None
 
 
-class StreamFactory(factory.DjangoModelFactory):
+class StreamFactory(DjangoModelFactory):
     class Meta:
         model = Stream
 

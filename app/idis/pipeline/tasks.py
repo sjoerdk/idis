@@ -6,7 +6,7 @@ from django.conf import settings
 from idis.pipeline.models import Stream
 from idissend.core import Stage
 from idissend.persistence import IDISSendRecords, get_db_sessionmaker
-from idissend.pipeline import DefaultPipeline
+from idissend.pipeline import IDISPipeline
 from idissend.stages import CoolDown, PendingAnon, IDISConnection, Trash
 from pathlib import Path
 
@@ -21,7 +21,7 @@ def run_pipeline_once():
     pipeline.run_once()
 
 
-def init_pipeline() -> DefaultPipeline:
+def init_pipeline() -> IDISPipeline:
     """Initialise a default pipeline based on django settings
     """
 
@@ -114,7 +114,7 @@ def init_pipeline() -> DefaultPipeline:
         name="trash", path=STAGES_BASE_PATH / "trash", streams=streams
     )
 
-    pipeline = DefaultPipeline(
+    pipeline = IDISPipeline(
         incoming=incoming,
         cooled_down=cooled_down,
         pending=pending,

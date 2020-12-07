@@ -124,7 +124,7 @@ services:
         condition: service_started
 
   flower:
-    image: mher/flower
+    image: mher/flower:0.9.5
     environment:
       - CELERY_BROKER_URL=redis://redis:6379/0
     ports:
